@@ -1,0 +1,31 @@
+package wrap
+
+import (
+	"log"
+    "reflect"
+    "time"
+)
+
+#! $pkgName := .Package.Name !##! range .Package.Interfaces !#type Wraps#! .Name !# struct {
+	Orign interface{}
+}
+#! $ifaceRef := . !##! range .Methods !#func (w *Wraps#! $ifaceRef.Name !#) #! .Name !#(#! $methodRef := . !##! range $x, $e := .In !##! $e.Name !# #! $e.Type !##! if ne $x (add (len $methodRef.In) -1)!#, #! end !##! end !#) (#! $methodRef := . !##! range $x, $e := .Out !##! $e.Type !##! if ne $x (add (len $methodRef.Out) -1)!#, #! end !##! end !#) {
+
+    var start = time.Now()
+    log.Println("starting func #! .Name !#")
+    defer func(start time.Time){
+        log.Printf("ended func #! .Name !# after %f seconds \n", time.Since(start).Seconds())
+    }(start)
+
+    result := reflect.ValueOf(w.Orign).MethodByName("#! .Name !#").Call([]reflect.Value{#! $methodRef := . !##! range $x, $e := .In !#reflect.ValueOf(#! $e.Name !#)#! if ne $x (add (len $methodRef.In) -1)!#, #! end !##! end !#})
+
+	#! if ne (len $methodRef.Out) 0!#return #! end !##! $methodRef := . !##! range $x, $e := .Out !#func(a interface{}) #! $e.Type !# {
+        		if (a == nil) {
+        			return nil
+        		}
+        		return a.(#! $e.Type !#)
+        	}(result[#! $x !#].Interface())#! if ne $x (add (len $methodRef.Out) -1)!#, #! end !##! end !#
+}
+#! end !#
+#! end !#
+

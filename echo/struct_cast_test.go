@@ -3,14 +3,21 @@ package echo
 import (
 	"fmt"
 	"testing"
+	"unsafe"
 )
 
 func TestStructTest(t *testing.T) {
-	var a A
+	var a *A = &A{
+		a: 1,
+		b: 2,
+	}
 	a.method()
 
-	//var b = (&B{})
-	//a = b.(A)
+	var b = (&B{a: 3,
+		b: 4})
+
+	c := (*A)(unsafe.Pointer(b))
+	c.method()
 }
 
 type A struct {
@@ -19,13 +26,10 @@ type A struct {
 }
 
 func (a *A) method() {
-	fmt.Println("a")
+	fmt.Println(a.a)
 }
 
 type B struct {
-	A
-}
-
-func (a *B) method() {
-	fmt.Println("b")
+	a int
+	b int
 }

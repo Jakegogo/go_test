@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"path/filepath"
+	"strings"
+)
 
 type WeekDay int
 
@@ -17,4 +21,10 @@ func main() {
 	fmt.Println(Wednesday)
 
 	fmt.Println(0.0)
+
+	p := strings.TrimPrefix("*Dcache.Proxy", "*")
+	li := strings.LastIndex(p, ".")
+	fmt.Printf("Dcache.Proxy"[:li] + "\n")
+
+	fmt.Println(filepath.Dir("*test/Dcache.Proxy"))
 }

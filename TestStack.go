@@ -26,7 +26,7 @@ func main() {
 
 }
 
-//func MyFunc() (interface{}, error) {
+//func MyFunc() (interfacetest{}, error) {
 //	return "result", xerrs.New("error occur");
 //}
 

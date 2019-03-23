@@ -3,6 +3,7 @@ package sexpr
 import (
 	"fmt"
 	echoutil "go_test/echo"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"testing"
@@ -20,7 +21,12 @@ func TestReplaceField(t *testing.T) {
 
 func handle1(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("handle1")
-	fmt.Fprintf(res, "handle 1")
+	//fmt.Fprintf(res, "handle 1")
+	res.Write([]byte("handle 1"))
+
+	body, _ := ioutil.ReadAll(req.Body)
+	fmt.Println(body)
+	res.WriteHeader(500)
 	//var sl = []string{"a", "b"}
 	//fmt.Println(sl[3]);
 }

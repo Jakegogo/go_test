@@ -14,7 +14,7 @@ import (
  * @param structV 目标结构体
  * @param name 字段名
  * @param v 字段值
- * @return interface.(*Type)
+ * @return interfacetest.(*Type)
  */
 func SetUnexportField(structV interface{}, name string, v interface{}) (newStruct interface{}) {
 	return setUnexport(reflect.ValueOf(structV), name, reflect.ValueOf(v))
@@ -25,7 +25,7 @@ func SetUnexportField(structV interface{}, name string, v interface{}) (newStruc
  * @param structV 目标结构体
  * @param name 字段名
  * @param v 字段值
- * @return interface.(*Type)
+ * @return interfacetest.(*Type)
  */
 func setUnexport(structV reflect.Value, name string, v reflect.Value) (newStruct interface{}) {
 	var fieldV reflect.Value
