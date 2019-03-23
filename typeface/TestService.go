@@ -5,6 +5,6 @@ package main
 type TestService struct {
 }
 
-func (s *TestService) Add(a, b int) (int, error) {
-	return 0, nil
+func (s *TestService) Add(a, b int) (int, error, int) {
+	return 0, nil, 0
 }
