@@ -215,8 +215,9 @@ func printImport(allPkgs *[]pkgSet, buf *bytes.Buffer, baseDir string) {
 func resolveImport(pkgset *pkgSet, buffer *bytes.Buffer, baseDir string) {
 	defer func() { // 必须要先声明defer，否则不能捕获到panic异常
 		if err := recover(); err != nil {
+			emptyPkg := ""
 			(*pkgset).skip = true
-			*(*pkgset).pkgPath = ""
+			(*pkgset).pkgPath = &emptyPkg
 			fmt.Printf("resolve import of %s error: %s", baseDir, err)
 		}
 	}()
