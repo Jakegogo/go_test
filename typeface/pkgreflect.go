@@ -257,10 +257,10 @@ func resolveImport(pkgset *pkgSet, buffer *bytes.Buffer, baseDir string) {
 	if strings.Contains(pkgPath, "/") {
 		aliasPrefix := strings.Replace(strings.Replace(pkgPath, "/", "_", -1), ".", "_", -1)
 		pkgAlias := pkgPath[strings.LastIndex(pkgPath, "/")+1:] + aliasPrefix + "_alias"
-		pkgAlias = strings.Replace(pkgAlias, "-", "_", -1)
+		pkgAlias = "_" + strings.Replace(pkgAlias, "-", "_", -1)
 		pkgset.pkgAlias = &pkgAlias
 	} else {
-		pkgAlias := pkgPath + "_alias"
+		pkgAlias := "_" + pkgPath + "_alias"
 		pkgset.pkgAlias = &pkgAlias
 	}
 }
