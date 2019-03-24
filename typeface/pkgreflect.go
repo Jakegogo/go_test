@@ -213,6 +213,14 @@ func printImport(allPkgs *[]pkgSet, buf *bytes.Buffer, baseDir string) {
 }
 
 func resolveImport(pkgset *pkgSet, buffer *bytes.Buffer, baseDir string) {
+	defer func() { // 必须要先声明defer，否则不能捕获到panic异常
+		if err := recover(); err != nil {
+			(*pkgset).skip = true
+			*(*pkgset).pkgPath = ""
+			fmt.Printf("resolve import of %s error: %s", baseDir, err)
+		}
+	}()
+
 	var pkgPath string
 	_, prog, _, _ := loadTarget(filepath.Join(baseDir, *pkgset.dir))
 
@@ -222,7 +230,7 @@ func resolveImport(pkgset *pkgSet, buffer *bytes.Buffer, baseDir string) {
 	}
 	pkgInfo := initialPkgs[0]
 	if len(pkgInfo.Errors) != 0 {
-		fmt.Printf("package %s has errors: %v", pkgInfo, pkgInfo.Errors)
+		fmt.Printf("package %s has errors: %v %s", pkgInfo, pkgInfo.Errors)
 	}
 	if pkgInfo.Pkg.Name() == "main" {
 		pkgset.skip = true
