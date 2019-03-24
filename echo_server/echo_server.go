@@ -1,4 +1,4 @@
-package main
+package echo_server
 
 import (
 	"bytes"
