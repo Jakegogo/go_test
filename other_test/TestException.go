@@ -1,4 +1,4 @@
-package other_test
+package main
 
 import (
 	"fmt"
@@ -18,11 +18,28 @@ func init() {
 func main() {
 	fmt.Println("Begin.")
 
-	var sl = []string{"a", "b"}
-	defer recoverPanic()
-	fmt.Println(sl[3])
+	errorFunc()
 
 	fmt.Println("End.") // NO End.
+}
+
+func errorFunc() {
+	bytes := make([]byte, 0)
+
+	var ResBody *[]byte // 请求体
+	ResBody = &bytes
+	fmt.Println(*ResBody)
+
+	var s Struct1
+	fmt.Println(s.Msg())
+
+	var i *int = nil
+	//*i = 3
+	fmt.Println(*i)
+
+	var sl = []string{"a", "b"}
+	//defer recoverPanic()
+	fmt.Println(sl[3])
 }
 
 func recoverPanic() {
@@ -32,4 +49,11 @@ func recoverPanic() {
 		fmt.Fprintf(os.Stderr, "Program quit unexpectedly; please check your logs\n", err.Error())
 		//os.Exit(1)
 	}
+}
+
+type Struct1 struct {
+}
+
+func (s Struct1) Msg() string {
+	return "ok"
 }

@@ -329,16 +329,22 @@ func FindAppropriateGoPath(s string, oldGOPATH string) string {
 		return oldGOPATH
 	}
 
-	var backupPath = ""
+	var firstPath, backupPath = "", ""
 	for _, path := range strings.Split(oldGOPATH, osadapter.GOPATH_SPLITTER) {
 		path = strings.TrimRight(path, osadapter.DIR_SPLITTER)
-		if (path == curPath || strings.HasPrefix(curPath, path)) && (s == "" || strings.HasPrefix(s, path)) {
-			return path
+		if (path == curPath || strings.HasPrefix(curPath, path)) &&
+			(s == "" || strings.HasPrefix(s, path)) &&
+			(len(path) > len(firstPath) || firstPath == "") {
+			firstPath = path
 		}
 		// get the longest path
-		if s == "" || (strings.HasPrefix(s, path)) && (len(path) < len(backupPath) || backupPath == "") {
+		if (s == "" || (strings.HasPrefix(s, path))) &&
+			(len(path) > len(backupPath) || backupPath == "") {
 			backupPath = path
 		}
+	}
+	if firstPath != "" {
+		return firstPath
 	}
 	return backupPath
 }

@@ -4,9 +4,7 @@
 package aspect
 
 import (
-	"fmt"
 	aspectrt "github.com/Jakegogo/aspectgo/aspect/rt"
-	"reflect"
 	"testing"
 	"unsafe"
 )
@@ -16,7 +14,7 @@ import "github.com/go-redis/redis"
 
 func TestZadd(t *testing.T) {
 	z := &R{}
-	_aspect_proxy_0_ZAdd_of((*Cmdable)(unsafe.Pointer(&z.client1)).setOrign(z))("test")
+	_aspect_proxy_0_ZAdd_of((*SClient)(unsafe.Pointer(&z.client1)))("test")
 
 }
 
@@ -24,14 +22,20 @@ type R struct {
 	client1 redis.Client
 }
 
-func _proxy_0_ZAdd_of(_ag_recv *Cmdable, key string, members []redis.Z) *redis.IntCmd {
+type SClient redis.Client
+
+func (c *SClient) ZAdd_Wapper(key string, members ...redis.Z) *redis.IntCmd {
+	return c.ZAdd(key, members...)
+}
+
+func _proxy_0_ZAdd_of(_ag_recv *SClient, key string, members []redis.Z) *redis.IntCmd {
 	_ag_res := (&agaspect.RedisDecreaseIncreaseCountAspect{}).Advice(&aspectrt.ContextImpl{XArgs: []interface {
 	}{key, members}, XFunc: func(_ag_args []interface {
 	}) []interface {
 	} {
 		_ag_arg0 := _ag_args[0].(string)
 		_ag_arg1 := _ag_args[1].([]redis.Z)
-		_ag_res0 := (*_ag_recv).ZAdd(_ag_arg0, _ag_arg1...)
+		_ag_res0 := (*_ag_recv).ZAdd_Wapper(_ag_arg0, _ag_arg1...)
 		_ag_res := []interface {
 		}{_ag_res0}
 		return _ag_res
@@ -41,31 +45,32 @@ func _proxy_0_ZAdd_of(_ag_recv *Cmdable, key string, members []redis.Z) *redis.I
 	return _ag_res0
 }
 
-func _aspect_proxy_0_ZAdd_of(_ag_recv *Cmdable) func(string, ...redis.Z) *redis.IntCmd {
+func _aspect_proxy_0_ZAdd_of(_ag_recv *SClient) func(string, ...redis.Z) *redis.IntCmd {
 	return func(key string, members ...redis.Z) *redis.IntCmd {
 
 		return _proxy_0_ZAdd_of(_ag_recv, key, members)
 	}
 }
 
-type Cmdable struct {
-	Orign interface{}
-}
-
-func (c *Cmdable) ZAdd(key string, members ...redis.Z) *redis.IntCmd {
-
-	obj := reflect.ValueOf(c.Orign).Elem().FieldByName("client1").FieldByName("cmdable")
-
-	fmt.Println(obj.NumField())
-
-	methodV, _ := obj.Type().MethodByName("ZAdd")
-
-	value := methodV.Func.Call([]reflect.Value{reflect.ValueOf(key), reflect.ValueOf(members)})
-	fmt.Println(value)
-	return nil
-}
-
-func (c *Cmdable) setOrign(orign interface{}) *Cmdable {
-	c.Orign = orign
-	return c
-}
+//// not work
+//type Cmdable struct {
+//	Orign interface{}
+//}
+//
+//func (c *Cmdable) ZAdd(key string, members ...redis.Z) *redis.IntCmd {
+//
+//	obj := reflect.ValueOf(c.Orign).Elem().FieldByName("client1").FieldByName("cmdable")
+//
+//	fmt.Println(obj.NumField())
+//
+//	methodV, _ := obj.Type().MethodByName("ZAdd")
+//
+//	value := methodV.Func.Call([]reflect.Value{reflect.ValueOf(key), reflect.ValueOf(members)})
+//	fmt.Println(value)
+//	return nil
+//}
+//
+//func (c *Cmdable) setOrign(orign interface{}) *Cmdable {
+//	c.Orign = orign
+//	return c
+//}
