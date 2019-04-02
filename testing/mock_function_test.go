@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"testing"
 
 	"bou.ke/monkey"
 )
 
-func main() {
+func TestMockFunc(t *testing.T) {
 	monkey.Patch(fmt.Println, func(a ...interface{}) (n int, err error) {
 		s := make([]interface{}, len(a))
 		for i, v := range a {

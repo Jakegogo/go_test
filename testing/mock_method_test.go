@@ -5,11 +5,12 @@ import (
 	"net/http"
 	"reflect"
 	"strings"
+	"testing"
 
 	"bou.ke/monkey"
 )
 
-func main() {
+func TestMockMethod(t *testing.T) {
 	var guard *monkey.PatchGuard
 	guard = monkey.PatchInstanceMethod(reflect.TypeOf(http.DefaultClient), "Get", func(c *http.Client, url string) (*http.Response, error) {
 		// 非线程安全
