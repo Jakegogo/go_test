@@ -1,13 +1,14 @@
 package main
 
 import (
-	"bou.ke/monkey"
 	"fmt"
-	reflect "reflect"
+	"reflect"
 	"runtime"
 	"testing"
 	"time"
 )
+
+var timedToo interface{}
 
 /*
 将创建Func封装， 非reflect.Func类型会panic
@@ -37,16 +38,6 @@ func time2(a int) int {
 
 func TestMakeFunc(t *testing.T) {
 	timedToo := MakeTimedFunction(time2).(func(int) int)
-	time2Val := timedToo(5)
-	fmt.Println(time2Val)
-}
-
-func TestMakeFuncWithPatch(t *testing.T) {
-
-	time2(6)
-
-	timedToo := MakeTimedFunction(time2).(func(int) int)
-	monkey.Patch(time2, timedToo)
 	time2Val := timedToo(5)
 	fmt.Println(time2Val)
 }
