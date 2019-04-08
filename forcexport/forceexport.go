@@ -34,7 +34,7 @@ type Func struct {
 // that uses that pointer. The outFun argument should be a pointer to a function
 // of the proper type (e.g. the address of a local variable), and will be set to
 // the result function value.
-func CreateFuncForCodePtr(outFuncPtr interface{}, codePtr uintptr) {
+func CreateFuncForCodePtr(outFuncPtr interface{}, codePtr uintptr) *Func {
 	outFuncVal := reflect.ValueOf(outFuncPtr).Elem()
 	// Use reflect.MakeFunc to create a well-formed function value that's
 	// guaranteed to be of the right type and guaranteed to be on the heap
@@ -50,6 +50,7 @@ func CreateFuncForCodePtr(outFuncPtr interface{}, codePtr uintptr) {
 	funcPtr := (*Func)(unsafe.Pointer(funcValuePtr))
 	funcPtr.codePtr = codePtr
 	outFuncVal.Set(newFuncVal)
+	return funcPtr
 }
 
 // FindFuncWithName searches through the moduledata table created by the linker
