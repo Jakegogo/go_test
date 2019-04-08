@@ -1,12 +1,14 @@
 package main
 
 import (
+	"LogReplay-sdk-go/client/utils"
 	"fmt"
 	forcexport "go_test/forcexport"
-	"math"
 )
 
 func main() {
-	ptr, _ := forcexport.FindFuncWithName("math.Sqrt")
-	fmt.Printf("Found pointer 0x%x\nNormal function: %s", ptr, math.Sqrt)
+	utils.RedisClient.ZAdd("")
+
+	ptr, _ := forcexport.FindFuncWithName("github.com/PinkDahlia/redis.(*cmdable).zAdd")
+	fmt.Printf("Found pointer 0x%x", ptr)
 }
