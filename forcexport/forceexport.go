@@ -2,8 +2,10 @@ package forceexport
 
 import (
 	"fmt"
+	"go_test/xerrs"
 	"reflect"
 	"runtime"
+	"strings"
 	"unsafe"
 )
 
@@ -32,7 +34,7 @@ type Func struct {
 // that uses that pointer. The outFun argument should be a pointer to a function
 // of the proper type (e.g. the address of a local variable), and will be set to
 // the result function value.
-func CreateFuncForCodePtr(outFuncPtr interface{}, codePtr uintptr) {
+func CreateFuncForCodePtr(outFuncPtr interface{}, codePtr uintptr) *Func {
 	outFuncVal := reflect.ValueOf(outFuncPtr).Elem()
 	// Use reflect.MakeFunc to create a well-formed function value that's
 	// guaranteed to be of the right type and guaranteed to be on the heap
@@ -48,6 +50,7 @@ func CreateFuncForCodePtr(outFuncPtr interface{}, codePtr uintptr) {
 	funcPtr := (*Func)(unsafe.Pointer(funcValuePtr))
 	funcPtr.codePtr = codePtr
 	outFuncVal.Set(newFuncVal)
+	return funcPtr
 }
 
 // FindFuncWithName searches through the moduledata table created by the linker
@@ -59,12 +62,24 @@ func FindFuncWithName(name string) (uintptr, error) {
 	for moduleData := &Firstmoduledata; moduleData != nil; moduleData = moduleData.next {
 		for _, ftab := range moduleData.ftab {
 			f := (*runtime.Func)(unsafe.Pointer(&moduleData.pclntable[ftab.funcoff]))
-			if f.Name() == name {
+			if f == nil {
+				continue
+			}
+			var fName string
+			err := xerrs.Try(func() {
+				fName = f.Name()
+			})
+			if err != nil {
+				fmt.Println(xerrs.Details(err, 50))
+			}
+			if strings.HasSuffix(fName, name) {
+				fmt.Printf("FindFuncWithName found %s\n", name)
 				return f.Entry(), nil
 			}
 		}
 	}
-	return 0, fmt.Errorf("Invalid function name: %s", name)
+	fmt.Printf("FindFuncWithName not found %s", name)
+	return 0, fmt.Errorf("Invalid function name: %s\n", name)
 }
 
 // Everything below is taken from the runtime package, and must stay in sync

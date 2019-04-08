@@ -10,7 +10,7 @@ import (
 )
 import "agaspect"
 
-import "github.com/go-redis/redis"
+import "github.com/PinkDahlia/redis"
 
 func TestZadd(t *testing.T) {
 	z := &R{}

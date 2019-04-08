@@ -13,7 +13,7 @@ import (
 )
 
 const src1 = `package main
-import "github.com/go-redis/redis"
+import "github.com/PinkDahlia/redis"
 
 type R struct {
 	client1 redis.Client
