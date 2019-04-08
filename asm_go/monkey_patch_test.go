@@ -3,6 +3,7 @@ package main
 import (
 	"bou.ke/monkey"
 	"fmt"
+	forcexport "go_test/forcexport"
 	"reflect"
 	"syscall"
 	"testing"
@@ -24,12 +25,26 @@ func time3(a int) int {
 }
 
 func TestMakeFuncWithCopyFunc(t *testing.T) {
+	codePtr, err := forcexport.FindFuncWithName("go_test/asm_go.time2")
+	if err == nil {
+		fmt.Printf("FindFuncWithName1 %d", codePtr)
+	}
 	patchGuard := monkey.Patch(time2, func(a int) int {
 		fmt.Printf("\npatch called %d\n", a)
 		return 0
 	})
 	if patchGuard != nil {
 
+	}
+	codePtr, err = forcexport.FindFuncWithName("go_test/asm_go.time2")
+	if err == nil {
+		fmt.Printf("FindFuncWithName2 %d", codePtr)
+	}
+
+	var originTime2 func(a int) int
+	forcexport.CreateFuncForCodePtr(&originTime2, patchGuard.OrignUintptr)
+	if err == nil {
+		originTime2(3)
 	}
 
 	//tfunc := time3
@@ -65,14 +80,6 @@ func TestMakeFuncWithMakeFunc2(t *testing.T) {
 
 	//func0 := (*runtime.Func)(unsafe.Pointer((patchGuard.OrignUintptr)))
 	//fmt.Printf("func0 name:%s", func0.Name())
-
-	funDef := func(a int) int { return 111 }
-	var timeNowInterface interface{} = funDef
-	timeNowInterfacePtr := (*Interface)(unsafe.Pointer(&timeNowInterface))
-
-	timeNowInterfacePtr.funcPtr.codePtr = patchGuard.OrignUintptr
-	sec := funDef(0)
-	fmt.Println(sec)
 
 	//funPointer := (unsafe.Pointer)(patchGuard.OrignUintptr)
 	//funCast := (*func(a int) int)(funPointer)
