@@ -4,17 +4,14 @@
 package aspect
 
 import (
-	aspectrt "github.com/Jakegogo/aspectgo/aspect/rt"
 	"testing"
-	"unsafe"
 )
-import "agaspect"
 
 import "github.com/PinkDahlia/redis"
 
 func TestZadd(t *testing.T) {
 	z := &R{}
-	_aspect_proxy_0_ZAdd_of((*SClient)(unsafe.Pointer(&z.client1)))("test")
+	z.client1.ZAdd("test")
 
 }
 
@@ -26,30 +23,6 @@ type SClient redis.Client
 
 func (c *SClient) ZAdd_Wapper(key string, members ...redis.Z) *redis.IntCmd {
 	return c.ZAdd(key, members...)
-}
-
-func _proxy_0_ZAdd_of(_ag_recv *SClient, key string, members []redis.Z) *redis.IntCmd {
-	_ag_res := (&agaspect.RedisDecreaseIncreaseCountAspect{}).Advice(&aspectrt.ContextImpl{XArgs: []interface {
-	}{key, members}, XFunc: func(_ag_args []interface {
-	}) []interface {
-	} {
-		_ag_arg0 := _ag_args[0].(string)
-		_ag_arg1 := _ag_args[1].([]redis.Z)
-		_ag_res0 := (*_ag_recv).ZAdd_Wapper(_ag_arg0, _ag_arg1...)
-		_ag_res := []interface {
-		}{_ag_res0}
-		return _ag_res
-	}, XReceiver: _ag_recv})
-	_ = _ag_res
-	_ag_res0, _ := _ag_res[0].(*redis.IntCmd)
-	return _ag_res0
-}
-
-func _aspect_proxy_0_ZAdd_of(_ag_recv *SClient) func(string, ...redis.Z) *redis.IntCmd {
-	return func(key string, members ...redis.Z) *redis.IntCmd {
-
-		return _proxy_0_ZAdd_of(_ag_recv, key, members)
-	}
 }
 
 //// not work
