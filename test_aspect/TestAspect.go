@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	asp "github.com/Jakegogo/aspectgo/aspect"
 	async_asp "github.com/Jakegogo/aspectgo/aspect/async"
 	"github.com/tylerb/gls"
 )
@@ -24,4 +26,17 @@ func (a *GlsAspect) OnContextGet() interface{} {
 // OnContextSet(c)
 func (a *GlsAspect) OnContextSet(ctx interface{}) {
 	gls.Set("key", ctx)
+}
+
+// default global var pointcut
+// eg:
+//------------------------
+type GlobalVarAspect struct {
+	async_asp.DefaultGlobalVarAspect
+}
+
+// Executed ONLY on runtime
+func (a *GlobalVarAspect) Advice(ctx asp.Context) []interface{} {
+	fmt.Println("visit global var")
+	return ctx.Call(ctx.Args())
 }

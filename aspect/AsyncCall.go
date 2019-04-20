@@ -3,69 +3,25 @@
 
 package aspect
 
-import aspectrt "github.com/Jakegogo/aspectgo/aspect/rt"
-import "agaspect"
-
 import "fmt"
+import "go_test/another"
+
+var global int = 3
 
 func AsyncCall() {
-	go (_aspect_proxy_0_Call_of())(1)
+	go Call(1)
+
+	// nothing
 
 	// go func
 	var a = 1
-	go (_aspect_proxy_1_Anonymous_Async_Func_of(func(param1 int) {
-		fmt.Println("async ", a)
-	}))(1)
-	fmt.Println("sync", a)
+	//var c = make(chan map[string]bool, 5)
+	//go func(c chan map[string]bool,param1 int) {
+	//	fmt.Println("async ", a)
+	//}(c, 1)
+	fmt.Println("sync", a, global, GlobalVarIns.key, another.GlobalVarIns1)
 }
 
 func Call(param1 int) {
 	fmt.Println("async ")
-}
-
-func _proxy_0_Call_of(param1 int) {
-	_ag_res := (&agaspect.GlsAspect{}).Advice(&aspectrt.ContextImpl{XArgs: []interface {
-	}{param1}, XFunc: func(_ag_args []interface {
-	}) []interface {
-	} {
-		_ag_arg0 := _ag_args[0].(int)
-		Call(_ag_arg0)
-		_ag_res := []interface {
-		}{}
-		return _ag_res
-	}, XReceiver: nil})
-	_ = _ag_res
-	return
-}
-
-func _aspect_proxy_0_Call_of() func(int) {
-	c := (&agaspect.GlsAspect{}).OnContextGet()
-	return func(param1 int) {
-		(&agaspect.GlsAspect{}).OnContextSet(c)
-		_proxy_0_Call_of(param1)
-	}
-}
-
-func _proxy_1_Anonymous_Async_Func_of(fun func(param1 int), param1 int) {
-	_ag_res := (&agaspect.GlsAspect{}).Advice(&aspectrt.ContextImpl{XArgs: []interface {
-	}{param1}, XFunc: func(_ag_args []interface {
-	}) []interface {
-	} {
-		_ag_arg0 := _ag_args[0].(int)
-		fun(_ag_arg0)
-		_ag_res := []interface {
-		}{}
-		return _ag_res
-	}, XReceiver: nil})
-	_ = _ag_res
-	return
-}
-
-func _aspect_proxy_1_Anonymous_Async_Func_of(fun func(param1 int)) func(int) {
-	c := (&agaspect.GlsAspect{}).OnContextGet()
-	fmt.Println("call get context")
-	return func(param1 int) {
-		(&agaspect.GlsAspect{}).OnContextSet(c)
-		_proxy_1_Anonymous_Async_Func_of(fun, param1)
-	}
 }
