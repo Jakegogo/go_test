@@ -4,6 +4,6 @@ type GlobalVar struct {
 	key string
 }
 
-var GlobalVarIns GlobalVar = GlobalVar{
+var GlobalVarIns *GlobalVar = &GlobalVar{
 	key: "true",
 }

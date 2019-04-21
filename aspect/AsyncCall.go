@@ -3,25 +3,132 @@
 
 package aspect
 
+import "agaspect"
+import aspectrt "github.com/Jakegogo/aspectgo/aspect/rt"
+
 import "fmt"
 import "go_test/another"
 
 var global int = 3
 
 func AsyncCall() {
-	go Call(1)
+	go (_aspect_proxy_0_Call_of())(1)
 
-	// nothing
+	global = 5
 
 	// go func
 	var a = 1
-	//var c = make(chan map[string]bool, 5)
-	//go func(c chan map[string]bool,param1 int) {
-	//	fmt.Println("async ", a)
-	//}(c, 1)
-	fmt.Println("sync", a, global, GlobalVarIns.key, another.GlobalVarIns1)
+	var c = make(chan map[string]bool, 5)
+	go (_aspect_proxy_1_Anonymous_Async_Func_of(func(c chan map[string]bool, param1 int) {
+		fmt.Println("async ", a)
+	}))(c, 1)
+	fmt.Println("sync", a, (_aspect_proxy_2_global_of(global))(), (_aspect_proxy_3_GlobalVarIns_of(GlobalVarIns))().key, (_aspect_proxy_4_GlobalVarIns1_of(another.GlobalVarIns1))())
 }
 
 func Call(param1 int) {
 	fmt.Println("async ")
+}
+
+func _proxy_0_Call_of(param1 int) {
+	_ag_res := (&agaspect.GlsAspect{}).Advice(&aspectrt.ContextImpl{XArgs: []interface {
+	}{param1}, XFunc: func(_ag_args []interface {
+	}) []interface {
+	} {
+		_ag_arg0 := _ag_args[0].(int)
+		Call(_ag_arg0)
+		_ag_res := []interface {
+		}{}
+		return _ag_res
+	}, XReceiver: nil})
+	_ = _ag_res
+	return
+}
+
+func _aspect_proxy_0_Call_of() func(int) {
+	_aspect_async_context := (&agaspect.GlsAspect{}).OnContextGet()
+	return func(param1 int) {
+		(&agaspect.GlsAspect{}).OnContextSet(_aspect_async_context)
+		_proxy_0_Call_of(param1)
+	}
+}
+
+func _proxy_1_Anonymous_Async_Func_of(fun func(c chan map[string]bool, param1 int), c chan map[string]bool, param1 int) {
+	_ag_res := (&agaspect.GlsAspect{}).Advice(&aspectrt.ContextImpl{XArgs: []interface {
+	}{c, param1}, XFunc: func(_ag_args []interface {
+	}) []interface {
+	} {
+		_ag_arg0 := _ag_args[0].(chan map[string]bool)
+		_ag_arg1 := _ag_args[1].(int)
+		fun(_ag_arg0, _ag_arg1)
+		_ag_res := []interface {
+		}{}
+		return _ag_res
+	}, XReceiver: nil})
+	_ = _ag_res
+	return
+}
+
+func _aspect_proxy_1_Anonymous_Async_Func_of(fun func(c chan map[string]bool, param1 int)) func(chan map[string]bool, int) {
+	_aspect_async_context := (&agaspect.GlsAspect{}).OnContextGet()
+	return func(c chan map[string]bool, param1 int) {
+		(&agaspect.GlsAspect{}).OnContextSet(_aspect_async_context)
+		_proxy_1_Anonymous_Async_Func_of(fun, c, param1)
+	}
+}
+
+func _proxy_2_global_of(varType string, varOrign int) (varMock int) {
+	_ag_res := (&agaspect.GlobalVarAspect{}).Advice(&aspectrt.ContextImpl{XArgs: []interface {
+	}{varType, varOrign}, XFunc: func(_ag_args []interface {
+	}) []interface {
+	} {
+		return []interface {
+		}{_ag_args[1]}
+	}, XReceiver: nil})
+	_ = _ag_res
+	_ag_res0, _ := _ag_res[0].(int)
+	return _ag_res0
+}
+
+func _aspect_proxy_2_global_of(varOrign int) func() int {
+	return func() (varMock int) {
+		return _proxy_2_global_of("var go_test/aspect.global int", varOrign)
+	}
+}
+
+func _proxy_3_GlobalVarIns_of(varType string, varOrign *GlobalVar) (varMock *GlobalVar) {
+	_ag_res := (&agaspect.GlobalVarAspect{}).Advice(&aspectrt.ContextImpl{XArgs: []interface {
+	}{varType, varOrign}, XFunc: func(_ag_args []interface {
+	}) []interface {
+	} {
+		return []interface {
+		}{_ag_args[1]}
+	}, XReceiver: nil})
+	_ = _ag_res
+	_ag_res0, _ := _ag_res[0].(*GlobalVar)
+	return _ag_res0
+}
+
+func _aspect_proxy_3_GlobalVarIns_of(varOrign *GlobalVar) func() *GlobalVar {
+	return func() (varMock *GlobalVar) {
+		return _proxy_3_GlobalVarIns_of("var go_test/aspect.GlobalVarIns *go_test/aspect.GlobalVar", varOrign)
+	}
+}
+
+func _proxy_4_GlobalVarIns1_of(varType string, varOrign string) (varMock string) {
+	_ag_res := (&agaspect.GlobalVarAspect{}).Advice(&aspectrt.ContextImpl{XArgs: []interface {
+	}{varType, varOrign}, XFunc: func(_ag_args []interface {
+	}) []interface {
+	} {
+		return []interface {
+		}{_ag_args[1]}
+	}, XReceiver: nil})
+	_ = _ag_res
+	_ag_res0, _ := _ag_res[0].(string)
+	return _ag_res0
+}
+
+func _aspect_proxy_4_GlobalVarIns1_of(varOrign string) func() string {
+	return func() (varMock string) {
+		return _proxy_4_GlobalVarIns1_of("var go_test/another.GlobalVarIns1 string", varOrign)
+	}
 }
