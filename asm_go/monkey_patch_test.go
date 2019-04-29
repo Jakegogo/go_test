@@ -13,15 +13,67 @@ import (
 type time2def func(a int) int
 
 func time2(a int) int {
-	result := a * 2
-	fmt.Print("called time2")
+	result := a * 5
+	fmt.Print("called time2\n")
 	return result
 }
 
 func time3(a int) int {
-	result := a * 3
-	fmt.Print("called time3")
+	result := a * 4
+	fmt.Print("called time3\n")
 	return result
+}
+
+func time4(a int) int {
+	result := a * 4
+	result = result * 5
+	result = result * 5
+	result = result * 5
+	result = result * 5
+	result = result * 5
+	result = result * 5
+	result = result * 5
+	result = result * 5
+	result = result * 5
+	result = result * 5
+	result = result * 5
+
+	fmt.Print("called time4\n")
+	return result
+}
+
+func TestMakeFuncWithReplace(t *testing.T) {
+	patchGuard := monkey.Patch1(time2, func(a int) int {
+		fmt.Printf("\npatch called %d\n", a)
+		return 0
+	}, time4)
+	if patchGuard != nil {
+
+	}
+	time2(1)
+	//func1 := reflect.MakeFunc(reflect.TypeOf(time2), func(args []reflect.Value) (results []reflect.Value) {
+	//
+	//	return []reflect.Value{reflect.ValueOf(0)}
+	//}).Interface()
+
+	var originTime2 func(a int) int
+	forcexport.CreateFuncForCodePtr(&originTime2, patchGuard.OrignUintptr)
+	fmt.Println("result is:", originTime2(3))
+	fmt.Println("actual result is:", time4(3))
+}
+
+func TestMakeFuncWithReplaceMake(t *testing.T) {
+	patchGuard := monkey.Patch(time2, func(a int) int {
+		fmt.Printf("\npatch called %d\n", a)
+		return 0
+	})
+	time2(2)
+
+	monkey.PatchWithJump(time3, patchGuard.OrignBytes)
+
+	time2(2)
+	time3(2)
+
 }
 
 func TestMakeFuncWithCopyFunc(t *testing.T) {
@@ -34,7 +86,7 @@ func TestMakeFuncWithCopyFunc(t *testing.T) {
 		return 0
 	})
 	if patchGuard != nil {
-
+		time2(1)
 	}
 	codePtr, err = forcexport.FindFuncWithName("go_test/asm_go.time2")
 	if err == nil {
@@ -150,35 +202,6 @@ func TestMakeFuncWithMakeFunc(t *testing.T) {
 
 	//(uintptr)(binary.LittleEndian.Uint32(patchGuard.OrignBytes))
 	funImpl.code = (uintptr)(patchGuard.OrignUintptr)
-
-	func1.(func(a int) int)(102)
-}
-
-func TestMakeFuncWithReplace(t *testing.T) {
-	patchGuard := monkey.Patch(time2, func(a int) int {
-		fmt.Printf("\npatch called %d\n", a)
-		return 0
-	})
-	if patchGuard != nil {
-
-	}
-
-	//func1 := reflect.MakeFunc(reflect.TypeOf(time2), func(args []reflect.Value) (results []reflect.Value) {
-	//
-	//	return []reflect.Value{reflect.ValueOf(0)}
-	//}).Interface()
-
-	var funcVar time2def
-	var funcType reflect.Type
-	funcType = reflect.TypeOf(funcVar)
-	v, _, err := CreateFunc(funcType, AnyGeneric)
-	if err != nil {
-		panic(err)
-	}
-
-	func1 := v.Interface()
-
-	monkey.PatchWithJump(func1, patchGuard.OrignBytes)
 
 	func1.(func(a int) int)(102)
 }

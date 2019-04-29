@@ -8,7 +8,7 @@ import (
 
 func a() int { return 1 }
 
-func main() {
+func TestPointCut1() {
 
 	f := a
 
