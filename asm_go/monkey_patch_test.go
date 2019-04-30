@@ -37,6 +37,17 @@ func time4(a int) int {
 	result = result * 5
 	result = result * 5
 	result = result * 5
+	result = result * 5
+	result = result * 5
+	result = result * 5
+	result = result * 5
+	result = result * 5
+	result = result * 5
+	result = result * 5
+	result = result * 5
+	result = result * 5
+	result = result * 5
+	result = result * 5
 
 	fmt.Print("called time4\n")
 	return result

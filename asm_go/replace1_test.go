@@ -5,8 +5,8 @@ import (
 	"unsafe"
 )
 
-func a1() int { return 1 }
-func b1() int { return 2 }
+func a2() int { return 1 }
+func b2() int { return 2 }
 
 func rawMemoryAccess1(b uintptr) []byte {
 	return (*(*[0xFF]byte)(unsafe.Pointer(b)))[:]
@@ -33,6 +33,6 @@ func replace(orig, replacement func() int) {
 }
 
 func TestReplace1(t *testing.T) {
-	replace(a1, b1)
-	print(a1())
+	replace(a2, b2)
+	print(a2())
 }

@@ -11,7 +11,7 @@ func a1(a int) int {
 	return result
 }
 
-func main() {
+func main1() {
 	f := a1
 	f(1)
 	a1(1)
