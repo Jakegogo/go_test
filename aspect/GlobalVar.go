@@ -1,9 +1,7 @@
 package aspect
 
-type GlobalVar struct {
-	key string
-}
+import "go_test/another"
 
-var GlobalVarIns *GlobalVar = &GlobalVar{
-	key: "true",
+var GlobalVarIns *another.GlobalVar = &another.GlobalVar{
+	Key: "true",
 }

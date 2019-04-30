@@ -11,6 +11,8 @@ import "go_test/another"
 
 var global int = 3
 
+var global1 int
+
 func AsyncCall() {
 	go (_aspect_proxy_0_Call_of())(1)
 
@@ -22,7 +24,7 @@ func AsyncCall() {
 	go (_aspect_proxy_1_Anonymous_Async_Func_of(func(c chan map[string]bool, param1 int) {
 		fmt.Println("async ", a)
 	}))(c, 1)
-	fmt.Println("sync", a, (_aspect_proxy_2_global_of(global))(), (_aspect_proxy_3_GlobalVarIns_of(GlobalVarIns))().key, (_aspect_proxy_4_GlobalVarIns1_of(another.GlobalVarIns1))())
+	fmt.Println("sync", a, *((_aspect_proxy_2_global_of(&global))()), (*((_aspect_proxy_3_GlobalVarIns_of(&GlobalVarIns))())).Key, another.GlobalVarIns1, *((_aspect_proxy_4_global1_of(&global1))()))
 }
 
 func Call(param1 int) {
@@ -76,7 +78,7 @@ func _aspect_proxy_1_Anonymous_Async_Func_of(fun func(c chan map[string]bool, pa
 	}
 }
 
-func _proxy_2_global_of(varType string, varOrign int) (varMock int) {
+func _proxy_2_global_of(varType string, varOrign *int) (varMock *int) {
 	_ag_res := (&agaspect.GlobalVarAspect{}).Advice(&aspectrt.ContextImpl{XArgs: []interface {
 	}{varType, varOrign}, XFunc: func(_ag_args []interface {
 	}) []interface {
@@ -85,17 +87,17 @@ func _proxy_2_global_of(varType string, varOrign int) (varMock int) {
 		}{_ag_args[1]}
 	}, XReceiver: nil})
 	_ = _ag_res
-	_ag_res0, _ := _ag_res[0].(int)
+	_ag_res0, _ := _ag_res[0].(*int)
 	return _ag_res0
 }
 
-func _aspect_proxy_2_global_of(varOrign int) func() int {
-	return func() (varMock int) {
-		return _proxy_2_global_of("var go_test/aspect.global int", varOrign)
+func _aspect_proxy_2_global_of(varOrign *int) func() *int {
+	return func() (varMock *int) {
+		return _proxy_2_global_of("go_test/aspect.global", varOrign)
 	}
 }
 
-func _proxy_3_GlobalVarIns_of(varType string, varOrign *GlobalVar) (varMock *GlobalVar) {
+func _proxy_3_GlobalVarIns_of(varType string, varOrign **another.GlobalVar) (varMock **another.GlobalVar) {
 	_ag_res := (&agaspect.GlobalVarAspect{}).Advice(&aspectrt.ContextImpl{XArgs: []interface {
 	}{varType, varOrign}, XFunc: func(_ag_args []interface {
 	}) []interface {
@@ -104,17 +106,17 @@ func _proxy_3_GlobalVarIns_of(varType string, varOrign *GlobalVar) (varMock *Glo
 		}{_ag_args[1]}
 	}, XReceiver: nil})
 	_ = _ag_res
-	_ag_res0, _ := _ag_res[0].(*GlobalVar)
+	_ag_res0, _ := _ag_res[0].(**another.GlobalVar)
 	return _ag_res0
 }
 
-func _aspect_proxy_3_GlobalVarIns_of(varOrign *GlobalVar) func() *GlobalVar {
-	return func() (varMock *GlobalVar) {
-		return _proxy_3_GlobalVarIns_of("var go_test/aspect.GlobalVarIns *go_test/aspect.GlobalVar", varOrign)
+func _aspect_proxy_3_GlobalVarIns_of(varOrign **another.GlobalVar) func() **another.GlobalVar {
+	return func() (varMock **another.GlobalVar) {
+		return _proxy_3_GlobalVarIns_of("go_test/aspect.GlobalVarIns", varOrign)
 	}
 }
 
-func _proxy_4_GlobalVarIns1_of(varType string, varOrign string) (varMock string) {
+func _proxy_4_global1_of(varType string, varOrign *int) (varMock *int) {
 	_ag_res := (&agaspect.GlobalVarAspect{}).Advice(&aspectrt.ContextImpl{XArgs: []interface {
 	}{varType, varOrign}, XFunc: func(_ag_args []interface {
 	}) []interface {
@@ -123,12 +125,12 @@ func _proxy_4_GlobalVarIns1_of(varType string, varOrign string) (varMock string)
 		}{_ag_args[1]}
 	}, XReceiver: nil})
 	_ = _ag_res
-	_ag_res0, _ := _ag_res[0].(string)
+	_ag_res0, _ := _ag_res[0].(*int)
 	return _ag_res0
 }
 
-func _aspect_proxy_4_GlobalVarIns1_of(varOrign string) func() string {
-	return func() (varMock string) {
-		return _proxy_4_GlobalVarIns1_of("var go_test/another.GlobalVarIns1 string", varOrign)
+func _aspect_proxy_4_global1_of(varOrign *int) func() *int {
+	return func() (varMock *int) {
+		return _proxy_4_global1_of("go_test/aspect.global1", varOrign)
 	}
 }

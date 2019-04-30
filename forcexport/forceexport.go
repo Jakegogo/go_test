@@ -72,6 +72,7 @@ func FindFuncWithName(name string) (uintptr, error) {
 			if err != nil {
 				fmt.Println(xerrs.Details(err, 50))
 			}
+			//fmt.Println(fName)
 			if strings.HasSuffix(fName, name) {
 				fmt.Printf("FindFuncWithName found %s\n", name)
 				return f.Entry(), nil

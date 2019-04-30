@@ -1,0 +1,115 @@
+TEXT %22%22.a1(SB) gofile../Users/yongfuchen/go/src/go_test/asm_go/asm1.go
+  asm1.go:8		0x6e5			65488b0c2500000000	MOVQ GS:0, CX		[5:9]R_TLS_LE		
+  asm1.go:8		0x6ee			483b6110		CMPQ 0x10(CX), SP	
+  asm1.go:8		0x6f2			0f868c000000		JBE 0x784		
+  asm1.go:8		0x6f8			4883ec68		SUBQ $0x68, SP		
+  asm1.go:8		0x6fc			48896c2460		MOVQ BP, 0x60(SP)	
+  asm1.go:8		0x701			488d6c2460		LEAQ 0x60(SP), BP	
+  asm1.go:8		0x706			48c744247000000000	MOVQ $0x0, 0x70(SP)	
+  asm1.go:9		0x70f			0f57c0			XORPS X0, X0		
+  asm1.go:9		0x712			0f11442438		MOVUPS X0, 0x38(SP)	
+  asm1.go:9		0x717			488d442438		LEAQ 0x38(SP), AX	
+  asm1.go:9		0x71c			4889442430		MOVQ AX, 0x30(SP)	
+  asm1.go:9		0x721			8400			TESTB AL, 0(AX)		
+  asm1.go:9		0x723			488d0d00000000		LEAQ 0(IP), CX		[3:7]R_PCREL:type.string	
+  asm1.go:9		0x72a			48894c2438		MOVQ CX, 0x38(SP)	
+  asm1.go:9		0x72f			488d0d00000000		LEAQ 0(IP), CX		[3:7]R_PCREL:%22%22.statictmp_0	
+  asm1.go:9		0x736			48894c2440		MOVQ CX, 0x40(SP)	
+  asm1.go:9		0x73b			8400			TESTB AL, 0(AX)		
+  asm1.go:9		0x73d			eb00			JMP 0x73f		
+  asm1.go:9		0x73f			4889442448		MOVQ AX, 0x48(SP)	
+  asm1.go:9		0x744			48c744245001000000	MOVQ $0x1, 0x50(SP)	
+  asm1.go:9		0x74d			48c744245801000000	MOVQ $0x1, 0x58(SP)	
+  asm1.go:9		0x756			48890424		MOVQ AX, 0(SP)		
+  asm1.go:9		0x75a			48c744240801000000	MOVQ $0x1, 0x8(SP)	
+  asm1.go:9		0x763			48c744241001000000	MOVQ $0x1, 0x10(SP)	
+  asm1.go:9		0x76c			e800000000		CALL 0x771		[1:5]R_CALL:fmt.Println	
+  asm1.go:10		0x771			48c744247001000000	MOVQ $0x1, 0x70(SP)	
+  asm1.go:10		0x77a			488b6c2460		MOVQ 0x60(SP), BP	
+  asm1.go:10		0x77f			4883c468		ADDQ $0x68, SP		
+  asm1.go:10		0x783			c3			RET			
+  asm1.go:8		0x784			e800000000		CALL 0x789		[1:5]R_CALL:runtime.morestack_noctxt	
+  asm1.go:8		0x789			e957ffffff		JMP %22%22.a1(SB)	
+
+TEXT %22%22.main(SB) gofile../Users/yongfuchen/go/src/go_test/asm_go/asm1.go
+  asm1.go:13		0x7c7			65488b0c2500000000		MOVQ GS:0, CX		[5:9]R_TLS_LE		
+  asm1.go:13		0x7d0			488d4424f0			LEAQ -0x10(SP), AX	
+  asm1.go:13		0x7d5			483b4110			CMPQ 0x10(CX), AX	
+  asm1.go:13		0x7d9			0f86f8000000			JBE 0x8d7		
+  asm1.go:13		0x7df			4881ec90000000			SUBQ $0x90, SP		
+  asm1.go:13		0x7e6			4889ac2488000000		MOVQ BP, 0x88(SP)	
+  asm1.go:13		0x7ee			488dac2488000000		LEAQ 0x88(SP), BP	
+  asm1.go:14		0x7f6			488d0500000000			LEAQ 0(IP), AX		[3:7]R_PCREL:%22%22.a1·f	
+  asm1.go:14		0x7fd			4889442440			MOVQ AX, 0x40(SP)	
+  asm1.go:15		0x802			0f57c0				XORPS X0, X0		
+  asm1.go:15		0x805			0f11442460			MOVUPS X0, 0x60(SP)	
+  asm1.go:15		0x80a			488d442460			LEAQ 0x60(SP), AX	
+  asm1.go:15		0x80f			4889442448			MOVQ AX, 0x48(SP)	
+  asm1.go:15		0x814			488d442440			LEAQ 0x40(SP), AX	
+  asm1.go:15		0x819			8400				TESTB AL, 0(AX)		
+  asm1.go:15		0x81b			488b442440			MOVQ 0x40(SP), AX	
+  asm1.go:15		0x820			4889442408			MOVQ AX, 0x8(SP)	
+  asm1.go:15		0x825			488d0500000000			LEAQ 0(IP), AX		[3:7]R_PCREL:type.uintptr	
+  asm1.go:15		0x82c			48890424			MOVQ AX, 0(SP)		
+  asm1.go:15		0x830			e800000000			CALL 0x835		[1:5]R_CALL:runtime.convT2E64	
+  asm1.go:15		0x835			488b442418			MOVQ 0x18(SP), AX	
+  asm1.go:15		0x83a			488b4c2410			MOVQ 0x10(SP), CX	
+  asm1.go:15		0x83f			48894c2450			MOVQ CX, 0x50(SP)	
+  asm1.go:15		0x844			4889442458			MOVQ AX, 0x58(SP)	
+  asm1.go:15		0x849			488b542448			MOVQ 0x48(SP), DX	
+  asm1.go:15		0x84e			8402				TESTB AL, 0(DX)		
+  asm1.go:15		0x850			48890a				MOVQ CX, 0(DX)		
+  asm1.go:15		0x853			488d7a08			LEAQ 0x8(DX), DI	
+  asm1.go:15		0x857			833d0000000000			CMPL $0x0, 0(IP)	[2:6]R_PCREL:runtime.writeBarrier+-1	
+  asm1.go:15		0x85e			7402				JE 0x862		
+  asm1.go:15		0x860			eb6e				JMP 0x8d0		
+  asm1.go:15		0x862			48894208			MOVQ AX, 0x8(DX)	
+  asm1.go:15		0x866			eb00				JMP 0x868		
+  asm1.go:15		0x868			488b442448			MOVQ 0x48(SP), AX	
+  asm1.go:15		0x86d			8400				TESTB AL, 0(AX)		
+  asm1.go:15		0x86f			eb00				JMP 0x871		
+  asm1.go:15		0x871			4889442470			MOVQ AX, 0x70(SP)	
+  asm1.go:15		0x876			48c744247801000000		MOVQ $0x1, 0x78(SP)	
+  asm1.go:15		0x87f			48c784248000000001000000	MOVQ $0x1, 0x80(SP)	
+  asm1.go:15		0x88b			488d0500000000			LEAQ 0(IP), AX		[3:7]R_PCREL:go.string."0x%x\n"	
+  asm1.go:15		0x892			48890424			MOVQ AX, 0(SP)		
+  asm1.go:15		0x896			48c744240805000000		MOVQ $0x5, 0x8(SP)	
+  asm1.go:15		0x89f			488b442470			MOVQ 0x70(SP), AX	
+  asm1.go:15		0x8a4			4889442410			MOVQ AX, 0x10(SP)	
+  asm1.go:15		0x8a9			48c744241801000000		MOVQ $0x1, 0x18(SP)	
+  asm1.go:15		0x8b2			48c744242001000000		MOVQ $0x1, 0x20(SP)	
+  asm1.go:15		0x8bb			e800000000			CALL 0x8c0		[1:5]R_CALL:fmt.Printf	
+  asm1.go:16		0x8c0			488bac2488000000		MOVQ 0x88(SP), BP	
+  asm1.go:16		0x8c8			4881c490000000			ADDQ $0x90, SP		
+  asm1.go:16		0x8cf			c3				RET			
+  asm1.go:15		0x8d0			e800000000			CALL 0x8d5		[1:5]R_CALL:runtime.gcWriteBarrier	
+  asm1.go:15		0x8d5			eb91				JMP 0x868		
+  asm1.go:13		0x8d7			e800000000			CALL 0x8dc		[1:5]R_CALL:runtime.morestack_noctxt	
+  asm1.go:13		0x8dc			e9e6feffff			JMP %22%22.main(SB)	
+
+TEXT %22%22.init(SB) gofile..<autogenerated>
+  gofile..<autogenerated>:1	0x949			65488b0c2500000000	MOVQ GS:0, CX		[5:9]R_TLS_LE		
+  gofile..<autogenerated>:1	0x952			483b6110		CMPQ 0x10(CX), SP	
+  gofile..<autogenerated>:1	0x956			764e			JBE 0x9a6		
+  gofile..<autogenerated>:1	0x958			4883ec08		SUBQ $0x8, SP		
+  gofile..<autogenerated>:1	0x95c			48892c24		MOVQ BP, 0(SP)		
+  gofile..<autogenerated>:1	0x960			488d2c24		LEAQ 0(SP), BP		
+  gofile..<autogenerated>:1	0x964			803d0000000001		CMPB $0x1, 0(IP)	[2:6]R_PCREL:%22%22.initdone·+-1	
+  gofile..<autogenerated>:1	0x96b			7702			JA 0x96f		
+  gofile..<autogenerated>:1	0x96d			eb09			JMP 0x978		
+  gofile..<autogenerated>:1	0x96f			488b2c24		MOVQ 0(SP), BP		
+  gofile..<autogenerated>:1	0x973			4883c408		ADDQ $0x8, SP		
+  gofile..<autogenerated>:1	0x977			c3			RET			
+  gofile..<autogenerated>:1	0x978			803d0000000001		CMPB $0x1, 0(IP)	[2:6]R_PCREL:%22%22.initdone·+-1	
+  gofile..<autogenerated>:1	0x97f			7402			JE 0x983		
+  gofile..<autogenerated>:1	0x981			eb07			JMP 0x98a		
+  gofile..<autogenerated>:1	0x983			e800000000		CALL 0x988		[1:5]R_CALL:runtime.throwinit	
+  gofile..<autogenerated>:1	0x988			0f0b			UD2			
+  gofile..<autogenerated>:1	0x98a			c6050000000001		MOVB $0x1, 0(IP)	[2:6]R_PCREL:%22%22.initdone·+-1	
+  gofile..<autogenerated>:1	0x991			e800000000		CALL 0x996		[1:5]R_CALL:fmt.init			
+  gofile..<autogenerated>:1	0x996			c6050000000002		MOVB $0x2, 0(IP)	[2:6]R_PCREL:%22%22.initdone·+-1	
+  gofile..<autogenerated>:1	0x99d			488b2c24		MOVQ 0(SP), BP		
+  gofile..<autogenerated>:1	0x9a1			4883c408		ADDQ $0x8, SP		
+  gofile..<autogenerated>:1	0x9a5			c3			RET			
+  gofile..<autogenerated>:1	0x9a6			e800000000		CALL 0x9ab		[1:5]R_CALL:runtime.morestack_noctxt	
+  gofile..<autogenerated>:1	0x9ab			eb9c			JMP %22%22.init(SB)	
