@@ -11,7 +11,7 @@ func time5(a int) int {
 	return result
 }
 
-func time6(a int) int {
+func placeholder(a int) int {
 	result := a * 4
 	result = result * 5
 	result = result * 5
@@ -41,13 +41,13 @@ func time6(a int) int {
 }
 
 func main() {
-	var originTime2 func(a int) int
+	var originTime5 func(a int) int
 	patchGuard := monkey.Patch1(time5, func(a int) int {
-		fmt.Println("orign result is:", originTime2(3))
+		fmt.Println("orign result is:", originTime5(3))
 		return a * 6
-	}, time6)
+	}, placeholder)
 
-	forcexport.CreateFuncForCodePtr(&originTime2, patchGuard.OrignUintptr)
+	forcexport.CreateFuncForCodePtr(&originTime5, patchGuard.OrignUintptr)
 	fmt.Println("wraper result is:", time5(3))
-	fmt.Println("placeholder result is:", time6(3))
+	fmt.Println("placeholder result is:", placeholder(3))
 }
