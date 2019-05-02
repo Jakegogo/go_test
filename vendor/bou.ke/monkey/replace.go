@@ -45,8 +45,8 @@ func replaceFunction(from, to, orign, placehlder uintptr) (originalBytes *[]byte
 	fmt.Printf("origin data: %s\n", hex.EncodeToString(original))
 
 	// copy origin function
-	copyf :=  rawMemoryAccess(from, 520)
-	copyOrigin := make([]byte, 514)
+	copyf :=  rawMemoryAccess(from, 600)
+	copyOrigin := make([]byte, 600)
 	copy(copyOrigin, copyf)
 
 	copyToLocation(placehlder, copyf)
