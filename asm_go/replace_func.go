@@ -4,6 +4,7 @@ import (
 	"bou.ke/monkey"
 	"fmt"
 	forcexport "go_test/forcexport"
+	"reflect"
 )
 
 func time4(a int) int {
@@ -40,7 +41,25 @@ func main() {
 	// 调用包装后的方法
 	fmt.Println("wraper result1 is:", time4(3))
 	fmt.Println("wraper result2 is:", time5(3))
+
+	dynamicFunc()
 }
+
+func dynamicFunc() {
+	var originTime4 func(a int) int
+	// monkey劫持函数调用
+	dynamicFunc := reflect.MakeFunc(reflect.TypeOf(time4), func(args []reflect.Value) (results []reflect.Value) {
+		fmt.Println("orign result2 is:", originTime4(3))
+		fmt.Println("dynamicFunc args is", args)
+		result := args[0].Interface().(int) * 6
+		return []reflect.Value{reflect.ValueOf(result)}
+	}).Interface()
+	patchGuard := monkey.Patch1(time4, dynamicFunc, getPlaceHolder3(1))
+	// 构造原先方法
+	forcexport.CreateFuncForCodePtr(&originTime4, patchGuard.OrignUintptr)
+	fmt.Println("wraper result1 is:", time4(3))
+}
+
 
 func getPlaceHolder(a int) interface{} {
 	return func(a int64) (int64, string) {
@@ -111,6 +130,75 @@ func getPlaceHolder(a int) interface{} {
 }
 
 func getPlaceHolder2(a int) interface{} {
+	return func(a int64) (int64, string) {
+		result := a * 4
+		result = result * 5
+		result = result * 6
+		result = result * 7
+		result = result * 8
+		result = result * 9
+		result = result * 10
+		result = result * 11
+		result = result * 12
+		result = result * 13
+		result = result * 14
+		result = result * 15
+		result = result * 16
+		result = result * 17
+		result = result * 18
+		result = result * 19
+		result = result * 20
+		result = result * 21
+		result = result * 22
+		result = result * 23
+		result = result * 24
+		result = result * 25
+		result = result * 26
+
+		result = result * 27
+		result = result * 28
+		result = result * 29
+		result = result * 30
+		result = result * 31
+		result = result * 32
+		result = result * 33
+		result = result * 34
+		result = result * 35
+		result = result * 36
+		result = result * 37
+		result = result * 38
+		result = result * 39
+		result = result * 40
+		result = result * 41
+		result = result * 42
+		result = result * 43
+		result = result * 44
+		result = result * 45
+		result = result * 46
+		result = result * 47
+		result = result * 48
+
+		result = result * 49
+		result = result * 50
+		result = result * 51
+		result = result * 52
+		result = result * 53
+		result = result * 54
+		result = result * 55
+		result = result * 56
+		result = result * 57
+		result = result * 58
+		result = result * 59
+		result = result * 60
+		result = result * 61
+		result = result * 62
+		fmt.Print("called getPlaceHolder2\n")
+		return result, ""
+	}
+}
+
+
+func getPlaceHolder3(a int) interface{} {
 	return func(a int64) (int64, string) {
 		result := a * 4
 		result = result * 5
