@@ -9,15 +9,31 @@ import (
 
 func time4(a int) int {
 	result := a * 11
+	if result > 50 {
+		return 0
+	}
+	if result > 100 {
+		return 1
+	}
+	if result > 200 {
+		return 2
+	}
+	time5(100)
 	return result
 }
 
 func time5(a int) int {
 	result := a * 22
+	fmt.Println("origin time5 called")
 	return result
 }
 
 func main() {
+	//staticFunc()
+	dynamicFunc()
+}
+
+func staticFunc() {
 	var originTime4 func(a int) int
 	var originTime5 func(a int) int
 	// monkey劫持函数调用
@@ -29,7 +45,6 @@ func main() {
 	// 构造原先方法
 	forcexport.CreateFuncForCodePtr(&originTime4, patchGuard.OrignUintptr)
 	fmt.Println("before orign result1 is:", originTime4(3))
-
 	patchGuard1 := monkey.Patch1(time5, func(a int) int {
 		// 调用原先的方法
 		fmt.Println("orign result2 is:", originTime5(3))
@@ -37,29 +52,27 @@ func main() {
 	}, getPlaceHolder2(2))
 	// 构造原先方法
 	forcexport.CreateFuncForCodePtr(&originTime5, patchGuard1.OrignUintptr)
-
 	// 调用包装后的方法
 	fmt.Println("wraper result1 is:", time4(3))
 	fmt.Println("wraper result2 is:", time5(3))
-
-	dynamicFunc()
 }
 
 func dynamicFunc() {
-	var originTime4 func(a int) int
+	var originTime4 = time4
+
 	// monkey劫持函数调用
 	dynamicFunc := reflect.MakeFunc(reflect.TypeOf(time4), func(args []reflect.Value) (results []reflect.Value) {
-		fmt.Println("orign result2 is:", originTime4(3))
+		result2 := reflect.ValueOf(originTime4).Call([]reflect.Value{reflect.ValueOf(3)})[0].Interface()
+		fmt.Println("orign result2 is:", result2)
 		fmt.Println("dynamicFunc args is", args)
 		result := args[0].Interface().(int) * 6
 		return []reflect.Value{reflect.ValueOf(result)}
 	}).Interface()
 	patchGuard := monkey.Patch1(time4, dynamicFunc, getPlaceHolder3(1))
 	// 构造原先方法
-	forcexport.CreateFuncForCodePtr(&originTime4, patchGuard.OrignUintptr)
+	forcexport.CreateFuncForCodePtrWithType(&originTime4, patchGuard.OrignUintptr, time4)
 	fmt.Println("wraper result1 is:", time4(3))
 }
-
 
 func getPlaceHolder(a int) interface{} {
 	return func(a int64) (int64, string) {
@@ -196,7 +209,6 @@ func getPlaceHolder2(a int) interface{} {
 		return result, ""
 	}
 }
-
 
 func getPlaceHolder3(a int) interface{} {
 	return func(a int64) (int64, string) {

@@ -53,6 +53,25 @@ func CreateFuncForCodePtr(outFuncPtr interface{}, codePtr uintptr) *Func {
 	return funcPtr
 }
 
+func CreateFuncForCodePtrWithType(outFuncPtr interface{}, codePtr uintptr, typedPtr interface{}) *Func {
+	outFuncVal := reflect.ValueOf(outFuncPtr).Elem()
+	// Use reflect.MakeFunc to create a well-formed function value that's
+	// guaranteed to be of the right type and guaranteed to be on the heap
+	// (so that we can modify it). We give a nil delegate function because
+	// it will never actually be called.
+	newFuncVal := reflect.MakeFunc(reflect.ValueOf(typedPtr).Type(), nil)
+	// Use reflection on the reflect.Value (yep!) to grab the underling
+	// function value pointer. Trying to call newFuncVal.Pointer() wouldn't
+	// work because it gives the code pointer rather than the function value
+	// pointer. The function value is a struct that starts with its code
+	// pointer, so we can swap out the code pointer with our desired value.
+	funcValuePtr := reflect.ValueOf(newFuncVal).FieldByName("ptr").Pointer()
+	funcPtr := (*Func)(unsafe.Pointer(funcValuePtr))
+	funcPtr.codePtr = codePtr
+	outFuncVal.Set(newFuncVal)
+	return funcPtr
+}
+
 // FindFuncWithName searches through the moduledata table created by the linker
 // and returns the function's code pointer. If the function was not found, it
 // returns an error. Since the data structures here are not exported, we copy
