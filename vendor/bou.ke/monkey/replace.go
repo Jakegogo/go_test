@@ -38,20 +38,17 @@ func replaceFunction(from, to, orign, placehlder uintptr) (originalBytes *[]byte
 	original := make([]byte, len(f))
 	copy(original, f)
 
-
 	data := Uint64(original[0:8])
-	fmt.Println("bytes ptr:",data)
+	fmt.Println("bytes ptr:", data)
 
 	fmt.Printf("origin data: %s\n", hex.EncodeToString(original))
 
 	// copy origin function
-	copyf :=  rawMemoryAccess(from, 520)
-	copyOrigin := make([]byte, 514)
+	copyf := rawMemoryAccess(from, 470)
+	copyOrigin := make([]byte, 470)
 	copy(copyOrigin, copyf)
 
 	copyToLocation(placehlder, copyf)
-
-
 
 	copyToLocation(from, jumpData)
 	fmt.Printf("from:%d, to:%d, orign:%d, originPtr:%d\n", from, to, orign, (uintptr)(unsafe.Pointer(&original[0])))
@@ -70,7 +67,6 @@ func replaceFunction(from, to, orign, placehlder uintptr) (originalBytes *[]byte
 	return &copyOrigin, unsafe.Pointer(&original), placehlder
 }
 
-
 func Uint64(b []byte) uint64 {
 	_ = b[7] // bounds check hint to compiler; see golang.org/issue/14808
 	return uint64(b[0]) | uint64(b[1])<<8 | uint64(b[2])<<16 | uint64(b[3])<<24 |
@@ -83,8 +79,6 @@ func replaceFunctionWithJump(from, orign uintptr, jumpData *[]byte) (original []
 	f := rawMemoryAccess(from, len(*jumpData))
 	original = make([]byte, len(f))
 	copy(original, f)
-
-
 
 	copyToLocation(from, *jumpData)
 	fmt.Printf("from:%d, orign:%d, originPtr:%d\n", from, orign, (uintptr)(unsafe.Pointer(&original[0])))

@@ -3,8 +3,12 @@
 
 package aspect
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestAsyncCall(t *testing.T) {
-	AsyncCall()
+	obj := &Obj{}
+	fmt.Println(obj.AsyncCall(1))
 }

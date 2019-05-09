@@ -28,6 +28,12 @@ func (a *GlsAspect) OnContextSet(ctx interface{}) {
 	gls.Set("key", ctx)
 }
 
+// on context clear implements
+// OnContextClear(c)
+func (a *GlsAspect) OnContextClear(ctx interface{}) {
+	gls.Set("key", nil)
+}
+
 // default global var pointcut
 // eg:
 //------------------------

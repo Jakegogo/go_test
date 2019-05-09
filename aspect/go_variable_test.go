@@ -3,6 +3,7 @@ package aspect
 import (
 	"fmt"
 	"github.com/go-redis/redis"
+	"os"
 	"reflect"
 	"sync"
 	"testing"
@@ -40,11 +41,27 @@ func Finish(i *bool) {
 }
 
 func TestVarType(t *testing.T) {
-	fmt.Println(GetElemType(lock1))
+	fmt.Println(GetElemTypeName(lock1))
 }
 
+/**
+ * 获取真实类型
+ */
 func GetElemType(val interface{}) string {
 	return elemType(reflect.TypeOf(val), 0)
+}
+
+/**
+ * 获取真实类型
+ */
+func GetElemTypeName(val interface{}) string {
+	typeStr := elemType(reflect.TypeOf(val), 0)
+	for i := len(typeStr) - 1; i >= 0 && !os.IsPathSeparator(typeStr[i]); i-- {
+		if typeStr[i] == '.' {
+			return typeStr[i+1:]
+		}
+	}
+	return ""
 }
 
 func elemType(typ reflect.Type, stack int) string {

@@ -34,10 +34,10 @@ func getInfirectPtr(v reflect.Value) unsafe.Pointer {
 }
 
 type PatchGuard struct {
-	target      reflect.Value
-	replacement reflect.Value
-	OrignPtr	unsafe.Pointer
-	OrignBytes	*[]byte
+	target       reflect.Value
+	replacement  reflect.Value
+	OrignPtr     unsafe.Pointer
+	OrignBytes   *[]byte
 	OrignUintptr uintptr
 }
 
@@ -51,8 +51,9 @@ func (g *PatchGuard) Restore() {
 func Patch(target, replacement interface{}) *PatchGuard {
 	return Patch1(target, replacement, nil)
 }
+
 // Patch replaces a function with another
-func Patch1(target, replacement ,placehlder interface{}) *PatchGuard {
+func Patch1(target, replacement, placehlder interface{}) *PatchGuard {
 	t := reflect.ValueOf(target)
 	r := reflect.ValueOf(replacement)
 	p := reflect.ValueOf(placehlder)
@@ -67,7 +68,6 @@ func PatchWithJump(target interface{}, jumpData *[]byte) *PatchGuard {
 	return &PatchGuard{t, reflect.Zero(t.Type()), orignPtr, orignJumpData, OrignUintptr}
 }
 
-
 // PatchInstanceMethod replaces an instance method methodName for the type target with replacement
 // Replacement should expect the receiver (of type target) as the first argument
 func PatchInstanceMethod(target reflect.Type, methodName string, replacement interface{}) *PatchGuard {
@@ -78,7 +78,7 @@ func PatchInstanceMethod(target reflect.Type, methodName string, replacement int
 	r := reflect.ValueOf(replacement)
 	patchValue(m.Func, r, reflect.ValueOf(nil))
 
-	return &PatchGuard{m.Func, r,  nil, nil, 0}
+	return &PatchGuard{m.Func, r, nil, nil, 0}
 }
 
 func patchValue(target, replacement, placehlder reflect.Value) (unsafe.Pointer, *[]byte, uintptr) {
@@ -106,7 +106,7 @@ func patchValue(target, replacement, placehlder reflect.Value) (unsafe.Pointer, 
 	ptr := uintptr(p1)
 	fmt.Println(" ptr is:", ptr)
 
-	bytes, orignFunc, targetuinptr := replaceFunction(target.Pointer(), (uintptr)(getPtr(replacement)), (uintptr)(getPtr(target)), placehlder.Pointer())
+	bytes, orignFunc, targetuinptr := replaceFunction(target.Pointer(), (uintptr)(getPtr(replacement)), (uintptr)(getPtr(target)), placehlder.Pointer()+20)
 	patches[target.Pointer()] = patch{*bytes, &replacement}
 
 	//targetInterface := target.Interface()

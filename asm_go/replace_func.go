@@ -18,13 +18,19 @@ func time4(a int) int {
 	if result > 200 {
 		return 2
 	}
-	time5(100)
-	return result
+
+	return result * time6(1)
 }
 
 func time5(a int) int {
 	result := a * 22
 	fmt.Println("origin time5 called")
+	return result
+}
+
+func time6(a int) int {
+	result := a * 3
+	fmt.Println("time6 called")
 	return result
 }
 
@@ -62,13 +68,14 @@ func dynamicFunc() {
 
 	// monkey劫持函数调用
 	dynamicFunc := reflect.MakeFunc(reflect.TypeOf(time4), func(args []reflect.Value) (results []reflect.Value) {
+		originTime4(1)
 		result2 := reflect.ValueOf(originTime4).Call([]reflect.Value{reflect.ValueOf(3)})[0].Interface()
 		fmt.Println("orign result2 is:", result2)
 		fmt.Println("dynamicFunc args is", args)
 		result := args[0].Interface().(int) * 6
 		return []reflect.Value{reflect.ValueOf(result)}
 	}).Interface()
-	patchGuard := monkey.Patch1(time4, dynamicFunc, getPlaceHolder3(1))
+	patchGuard := monkey.Patch1(time4, dynamicFunc, getPlaceHolder3())
 	// 构造原先方法
 	forcexport.CreateFuncForCodePtrWithType(&originTime4, patchGuard.OrignUintptr, time4)
 	fmt.Println("wraper result1 is:", time4(3))
@@ -210,7 +217,7 @@ func getPlaceHolder2(a int) interface{} {
 	}
 }
 
-func getPlaceHolder3(a int) interface{} {
+func getPlaceHolder3() interface{} {
 	return func(a int64) (int64, string) {
 		result := a * 4
 		result = result * 5

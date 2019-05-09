@@ -3,134 +3,52 @@
 
 package aspect
 
-import "agaspect"
-import aspectrt "github.com/Jakegogo/aspectgo/aspect/rt"
-
-import "fmt"
+import (
+	"fmt"
+	"unsafe"
+)
 import "go_test/another"
 
 var global int = 3
 
 var global1 int
 
-func AsyncCall() {
-	go (_aspect_proxy_0_Call_of())(1)
+type Obj struct {
+	i int
+}
 
+func (o *Obj) AsyncCall(i int) (string, int) {
+	go Call(1)
+
+	// nothing
 	global = 5
+
+	// go selector expr
+	v := &GlobalVar1{}
+	go v.Call()
 
 	// go func
 	var a = 1
 	var c = make(chan map[string]bool, 5)
-	go (_aspect_proxy_1_Anonymous_Async_Func_of(func(c chan map[string]bool, param1 int) {
+	go func(c chan map[string]bool, param1 int) {
 		fmt.Println("async ", a)
-	}))(c, 1)
-	fmt.Println("sync", a, *((_aspect_proxy_2_global_of(&global))()), (*((_aspect_proxy_3_GlobalVarIns_of(&GlobalVarIns))())).Key, another.GlobalVarIns1, *((_aspect_proxy_4_global1_of(&global1))()))
+	}(c, 1)
+	fmt.Println("sync", a, global, GlobalVarIns.Key, another.GlobalVarIns1, global1, o.i)
+	return "123", 0
 }
 
 func Call(param1 int) {
 	fmt.Println("async ")
+	a := another.GlobalVar{}
+
+	b := (*GlobalVar1)(unsafe.Pointer(&a))
+	fmt.Println(b.KEY1)
 }
 
-func _proxy_0_Call_of(param1 int) {
-	_ag_res := (&agaspect.GlsAspect{}).Advice(&aspectrt.ContextImpl{XArgs: []interface {
-	}{param1}, XFunc: func(_ag_args []interface {
-	}) []interface {
-	} {
-		_ag_arg0 := _ag_args[0].(int)
-		Call(_ag_arg0)
-		_ag_res := []interface {
-		}{}
-		return _ag_res
-	}, XReceiver: nil})
-	_ = _ag_res
-	return
+type GlobalVar1 struct {
+	KEY1 string
 }
 
-func _aspect_proxy_0_Call_of() func(int) {
-	_aspect_async_context := (&agaspect.GlsAspect{}).OnContextGet()
-	return func(param1 int) {
-		(&agaspect.GlsAspect{}).OnContextSet(_aspect_async_context)
-		_proxy_0_Call_of(param1)
-	}
-}
-
-func _proxy_1_Anonymous_Async_Func_of(fun func(c chan map[string]bool, param1 int), c chan map[string]bool, param1 int) {
-	_ag_res := (&agaspect.GlsAspect{}).Advice(&aspectrt.ContextImpl{XArgs: []interface {
-	}{c, param1}, XFunc: func(_ag_args []interface {
-	}) []interface {
-	} {
-		_ag_arg0 := _ag_args[0].(chan map[string]bool)
-		_ag_arg1 := _ag_args[1].(int)
-		fun(_ag_arg0, _ag_arg1)
-		_ag_res := []interface {
-		}{}
-		return _ag_res
-	}, XReceiver: nil})
-	_ = _ag_res
-	return
-}
-
-func _aspect_proxy_1_Anonymous_Async_Func_of(fun func(c chan map[string]bool, param1 int)) func(chan map[string]bool, int) {
-	_aspect_async_context := (&agaspect.GlsAspect{}).OnContextGet()
-	return func(c chan map[string]bool, param1 int) {
-		(&agaspect.GlsAspect{}).OnContextSet(_aspect_async_context)
-		_proxy_1_Anonymous_Async_Func_of(fun, c, param1)
-	}
-}
-
-func _proxy_2_global_of(varType string, varOrign *int) (varMock *int) {
-	_ag_res := (&agaspect.GlobalVarAspect{}).Advice(&aspectrt.ContextImpl{XArgs: []interface {
-	}{varType, varOrign}, XFunc: func(_ag_args []interface {
-	}) []interface {
-	} {
-		return []interface {
-		}{_ag_args[1]}
-	}, XReceiver: nil})
-	_ = _ag_res
-	_ag_res0, _ := _ag_res[0].(*int)
-	return _ag_res0
-}
-
-func _aspect_proxy_2_global_of(varOrign *int) func() *int {
-	return func() (varMock *int) {
-		return _proxy_2_global_of("go_test/aspect.global", varOrign)
-	}
-}
-
-func _proxy_3_GlobalVarIns_of(varType string, varOrign **another.GlobalVar) (varMock **another.GlobalVar) {
-	_ag_res := (&agaspect.GlobalVarAspect{}).Advice(&aspectrt.ContextImpl{XArgs: []interface {
-	}{varType, varOrign}, XFunc: func(_ag_args []interface {
-	}) []interface {
-	} {
-		return []interface {
-		}{_ag_args[1]}
-	}, XReceiver: nil})
-	_ = _ag_res
-	_ag_res0, _ := _ag_res[0].(**another.GlobalVar)
-	return _ag_res0
-}
-
-func _aspect_proxy_3_GlobalVarIns_of(varOrign **another.GlobalVar) func() **another.GlobalVar {
-	return func() (varMock **another.GlobalVar) {
-		return _proxy_3_GlobalVarIns_of("go_test/aspect.GlobalVarIns", varOrign)
-	}
-}
-
-func _proxy_4_global1_of(varType string, varOrign *int) (varMock *int) {
-	_ag_res := (&agaspect.GlobalVarAspect{}).Advice(&aspectrt.ContextImpl{XArgs: []interface {
-	}{varType, varOrign}, XFunc: func(_ag_args []interface {
-	}) []interface {
-	} {
-		return []interface {
-		}{_ag_args[1]}
-	}, XReceiver: nil})
-	_ = _ag_res
-	_ag_res0, _ := _ag_res[0].(*int)
-	return _ag_res0
-}
-
-func _aspect_proxy_4_global1_of(varOrign *int) func() *int {
-	return func() (varMock *int) {
-		return _proxy_4_global1_of("go_test/aspect.global1", varOrign)
-	}
+func (g *GlobalVar1) Call() {
+	fmt.Println("GlobalVar1.Call")
 }
