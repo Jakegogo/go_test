@@ -1,5 +1,5 @@
 #include <stdio.h>
 
-void SayHello(const char* s) {
-    puts(s);
+void SayHello(const char* s1) {
+    puts(s1);
 }

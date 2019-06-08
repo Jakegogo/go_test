@@ -11,5 +11,9 @@ func Sum(vals ...int) int {
 	for _, val := range vals {
 		total += val
 	}
+	var v interface{} = nil
+	bytes := v.([]byte)
+	fmt.Println(len(bytes))
+
 	return total
 }

@@ -17,7 +17,8 @@ type patch struct {
 var (
 	lock = sync.Mutex{}
 
-	patches = make(map[uintptr]patch)
+	patches   = make(map[uintptr]patch)
+	ptrholder = make(map[uintptr]interface{})
 )
 
 type value struct {
@@ -46,7 +47,7 @@ func (g *PatchGuard) Unpatch() {
 }
 
 func (g *PatchGuard) Restore() {
-	patchValue(g.target, g.replacement, reflect.ValueOf(nil))
+	patchValue(g.target, g.replacement, reflect.ValueOf(nil), nil)
 }
 func Patch(target, replacement interface{}) *PatchGuard {
 	return Patch1(target, replacement, nil)
@@ -57,13 +58,13 @@ func Patch1(target, replacement, placehlder interface{}) *PatchGuard {
 	t := reflect.ValueOf(target)
 	r := reflect.ValueOf(replacement)
 	p := reflect.ValueOf(placehlder)
-	orignPtr, originJumpData, OrignUintptr := patchValue(t, r, p)
+	orignPtr, originJumpData, OrignUintptr := patchValue(t, r, p, replacement)
 	return &PatchGuard{t, r, orignPtr, originJumpData, OrignUintptr}
 }
 
 func PatchWithJump(target interface{}, jumpData *[]byte) *PatchGuard {
 	t := reflect.ValueOf(target)
-	orignPtr, orignJumpData, OrignUintptr := patchValueWithJump(t, jumpData)
+	orignPtr, orignJumpData, OrignUintptr := patchValueWithJump(t, jumpData, nil)
 
 	return &PatchGuard{t, reflect.Zero(t.Type()), orignPtr, orignJumpData, OrignUintptr}
 }
@@ -76,12 +77,12 @@ func PatchInstanceMethod(target reflect.Type, methodName string, replacement int
 		panic(fmt.Sprintf("unknown method %s", methodName))
 	}
 	r := reflect.ValueOf(replacement)
-	patchValue(m.Func, r, reflect.ValueOf(nil))
+	patchValue(m.Func, r, reflect.ValueOf(nil), replacement)
 
 	return &PatchGuard{m.Func, r, nil, nil, 0}
 }
 
-func patchValue(target, replacement, placehlder reflect.Value) (unsafe.Pointer, *[]byte, uintptr) {
+func patchValue(target, replacement, placehlder reflect.Value, replacementPtr interface{}) (unsafe.Pointer, *[]byte, uintptr) {
 	lock.Lock()
 	defer lock.Unlock()
 
@@ -106,8 +107,9 @@ func patchValue(target, replacement, placehlder reflect.Value) (unsafe.Pointer, 
 	ptr := uintptr(p1)
 	fmt.Println(" ptr is:", ptr)
 
-	bytes, orignFunc, targetuinptr := replaceFunction(target.Pointer(), (uintptr)(getPtr(replacement)), (uintptr)(getPtr(target)), placehlder.Pointer()+20)
+	bytes, orignFunc, targetuinptr := replaceFunction(target.Pointer(), (uintptr)(getPtr(replacement)), (uintptr)(getPtr(target)), placehlder.Pointer())
 	patches[target.Pointer()] = patch{*bytes, &replacement}
+	ptrholder[target.Pointer()] = replacementPtr
 
 	//targetInterface := target.Interface()
 	//targetuinptr := *(*uintptr)(unsafe.Pointer(&targetInterface))
@@ -127,7 +129,7 @@ func patchValue(target, replacement, placehlder reflect.Value) (unsafe.Pointer, 
 	return orignFunc, bytes, targetuinptr
 }
 
-func patchValueWithJump(target reflect.Value, jumpData *[]byte) (unsafe.Pointer, *[]byte, uintptr) {
+func patchValueWithJump(target reflect.Value, jumpData *[]byte, replacementPtr interface{}) (unsafe.Pointer, *[]byte, uintptr) {
 	lock.Lock()
 	defer lock.Unlock()
 
@@ -137,6 +139,7 @@ func patchValueWithJump(target reflect.Value, jumpData *[]byte) (unsafe.Pointer,
 
 	bytes, orignFunc, originPtr := replaceFunctionWithJump(target.Pointer(), (uintptr)(getPtr(target)), jumpData)
 	patches[target.Pointer()] = patch{bytes, nil}
+	ptrholder[target.Pointer()] = replacementPtr
 
 	return orignFunc, &bytes, originPtr
 }

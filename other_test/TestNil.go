@@ -14,6 +14,11 @@ type IElm interface {
 }
 
 func main() {
+
+	if getElm() == nil {
+		fmt.Println("getElm() is nil")
+	}
+
 	a, _ := getElm().([]IElm)
 	if getElm() == nil {
 		a = nil

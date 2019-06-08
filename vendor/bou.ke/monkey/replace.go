@@ -24,8 +24,8 @@ func pageStart(ptr uintptr) uintptr {
 // to is a pointer to a go funcvalue
 func replaceFunction(from, to, orign, placehlder uintptr) (originalBytes *[]byte, orignFunc unsafe.Pointer, originPtr uintptr) {
 
-	fmt.Println("from is:", from)
-	fmt.Println("placehlder is:", placehlder)
+	fmt.Println("from is:", fmt.Sprintf("0x%x", from))
+	fmt.Println("placehlder is:", fmt.Sprintf("0x%x", placehlder))
 	redirect1 := *(*int32)(unsafe.Pointer(from))
 	fmt.Println("redirect1 is:", redirect1)
 
@@ -38,14 +38,11 @@ func replaceFunction(from, to, orign, placehlder uintptr) (originalBytes *[]byte
 	original := make([]byte, len(f))
 	copy(original, f)
 
-	data := Uint64(original[0:8])
-	fmt.Println("bytes ptr:", data)
-
 	fmt.Printf("origin data: %s\n", hex.EncodeToString(original))
 
 	// copy origin function
-	copyf := rawMemoryAccess(from, 470)
-	copyOrigin := make([]byte, 470)
+	copyf := rawMemoryAccess(from, 170)
+	copyOrigin := make([]byte, 170)
 	copy(copyOrigin, copyf)
 
 	copyToLocation(placehlder, copyf)
