@@ -6,10 +6,11 @@ import (
 	forcexport "go_test/forcexport"
 	"net"
 	"reflect"
-	"time"
 )
 
 var time6fun = reflect.ValueOf(time6)
+
+var C int = 9
 
 func time4(a int) int {
 	result := a * 11
@@ -22,9 +23,15 @@ func time4(a int) int {
 	if result < 200 {
 		return 9
 	}
+	C=3
+	fmt.Println(C)
 	//t6Result := 0
 	//t6Result := time6fun.Call([]reflect.Value{reflect.ValueOf(0)})[0].Interface().(int)
-	return result * time6(3)
+	return result * time6(3) + 1
+}
+
+func trace(i int) {
+	fmt.Println(i)
 }
 
 func time5(a int) int {
@@ -43,7 +50,7 @@ func time7(b int) int {
 	result := b * 101
 	net.Listen("tcp", "0.0.0.0:8090")
 	fmt.Println("time7 called")
-	return result
+	return result + 1
 }
 
 func main() {
@@ -63,7 +70,6 @@ var time6ptr = time6
 var time7ptr = time7
 
 func dynamicFunc() {
-
 	// monkey劫持函数调用
 	dynamicFunc := reflect.MakeFunc(reflect.TypeOf(time4), func(args []reflect.Value) (results []reflect.Value) {
 		defer func() {
@@ -72,24 +78,27 @@ func dynamicFunc() {
 				panic(err)
 			}
 		}()
-		originTime4(1)
 		//result2 := reflect.ValueOf(originTime4).Call([]reflect.Value{reflect.ValueOf(3)})[0].Interface()
 		//fmt.Println("orign result2 is:", result2)
 		//fmt.Println("dynamicFunc args is", args)
 		//result := args[0].Interface().(int) * 6
 		//return []reflect.Value{reflect.ValueOf(result)}
-		return []reflect.Value{reflect.ValueOf(originTime4(3232))}
+		return []reflect.Value{reflect.ValueOf(originTime4(900))}
 	}).Interface()
+
+	_ = dynamicFunc
+
+
 	patchGuard := monkey.Patch1(time4, dynamicFunc, getPlaceHolder3)
 	// 构造原先方法
 	fmt.Println("OrignUintptr is:", fmt.Sprintf("0x%x", patchGuard.OrignUintptr))
 	forcexport.CreateFuncForCodePtrWithType(&originTime4, patchGuard.OrignUintptr, time4)
 	originTime4Ptr = originTime4
 
-	time.Sleep(time.Second * 1)
 	//time4(3)
-	fmt.Println("wraper result1 is:", time4(32))
-	originTime4Ptr(1)
+	//time.Sleep(time.Second * 200)
+	//originTime4(3)
+ 	fmt.Println("wraper result1 is:", time4(900))
 	fmt.Println("ok")
 }
 
@@ -139,6 +148,19 @@ func getPlaceHolder(a int) interface{} {
 		result = result * 44
 		result = result * 45
 		result = result * 46
+		result = result * 47
+		result = result * 48
+
+		result = result * 37
+		result = result * 38
+		result = result * 39
+		result = result * 40
+		result = result * 41
+		result = result * 42
+		result = result + 43
+		result = result - 44
+		result = result * 45
+		result = result % 46
 		result = result * 47
 		result = result * 48
 
@@ -229,7 +251,7 @@ func getPlaceHolder2(a int) interface{} {
 	}
 }
 
-func getPlaceHolder3(a int64) (int64, string) {
+func getPlaceHolder3(a int) int {
 	result := a * 4
 	result = result * 5
 	result = result * 6
@@ -328,7 +350,8 @@ func getPlaceHolder3(a int64) (int64, string) {
 	result = result * 61
 
 	fmt.Print("called getPlaceHolder3\n")
-	return result, ""
+	fmt.Print("called getPlaceHolder \n")
+	return result
 }
 
 var originTime5 func(a int) int
@@ -354,4 +377,22 @@ func staticFunc() {
 	// 调用包装后的方法
 	fmt.Println("wraper result1 is:", time4(3))
 	fmt.Println("wraper result2 is:", time5(3))
+}
+
+
+func time999(a int) int {
+	result := a * 11
+	if result < 50 {
+		return 3
+	}
+	if result < 100 {
+		return 6
+	}
+	if result < 200 {
+		return 9
+	}
+	//t6Result := 0
+	//t6Result := time6fun.Call([]reflect.Value{reflect.ValueOf(0)})[0].Interface().(int)
+	fmt.Println("time999 called")
+	return result * time6(3)
 }
