@@ -37,8 +37,7 @@ type NetConnReadAspect struct {
 
 // Executed on compilation-time
 func (a *NetConnReadAspect) Pointcut() asp.Pointcut {
-	pointcut := regexp.QuoteMeta("(net.Conn).Read")
-	return asp.NewCallPointcutFromRegexp(pointcut)
+	return asp.NewCallPointcutFromRegexp(`(\(net\.Conn\)\.Read|\(\*net\.conn\)\.Read)$`)
 }
 
 // Executed ONLY on runtime
@@ -84,14 +83,18 @@ func (a *NetConnReadAspect) Advice(ctx asp.Context) []interface{} {
 	return ctx.Call(args)
 }
 
+func (a *NetConnReadAspect) IsUseOuterType() bool {
+	return true
+}
+
+
 // 网络写切面
 type NetConnWriteAspect struct {
 }
 
 // Executed on compilation-time
 func (a *NetConnWriteAspect) Pointcut() asp.Pointcut {
-	pointcut := regexp.QuoteMeta("(net.Conn).Write")
-	return asp.NewCallPointcutFromRegexp(pointcut)
+	return asp.NewCallPointcutFromRegexp(`(\(net\.Conn\)\.Write|\(\*net\.conn\)\.Write)$`)
 }
 
 // Executed ONLY on runtime
@@ -130,6 +133,10 @@ func (a *NetConnWriteAspect) Advice(ctx asp.Context) []interface{} {
 	}
 
 	return ctx.Call(args)
+}
+
+func (a *NetConnWriteAspect) IsUseOuterType() bool {
+	return true
 }
 
 type DialUdpAspect struct {

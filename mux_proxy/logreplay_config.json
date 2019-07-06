@@ -1,0 +1,16 @@
+{
+  "recordorplayback": true,
+  "writelog": true,
+  "enable_api_whitelist": false,
+  "api_whitelist": [
+    "/postwindowsrecordresult",
+    "/getappspecial",
+    "/postwindowsspeical",
+    "/postwindowsspeicalresult"
+  ],
+  "enable_user_whitelist": false,
+  "user_whitelist": [
+    "1553335406353114"
+  ],
+  "logger_level": 5
+}

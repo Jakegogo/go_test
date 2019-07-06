@@ -78,10 +78,15 @@ func CreateFuncForCodePtrWithType(outFuncPtr interface{}, codePtr uintptr, typed
 // them below (and they need to stay in sync or else things will fail
 // catastrophically).
 func FindFuncWithName(name string) (uintptr, error) {
+	var skip bool
 	for moduleData := &Firstmoduledata; moduleData != nil; moduleData = moduleData.next {
 		for _, ftab := range moduleData.ftab {
 			f := (*runtime.Func)(unsafe.Pointer(&moduleData.pclntable[ftab.funcoff]))
 			if f == nil {
+				continue
+			}
+			if skip {
+				skip = false
 				continue
 			}
 			var fName string
@@ -92,6 +97,9 @@ func FindFuncWithName(name string) (uintptr, error) {
 				fmt.Println(xerrs.Details(err, 50))
 			}
 			//fmt.Println(fName)
+			if fName == "main.init" {
+				skip = true
+			}
 			if strings.HasSuffix(fName, name) {
 				fmt.Printf("FindFuncWithName found %s\n", name)
 				return f.Entry(), nil

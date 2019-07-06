@@ -62,6 +62,17 @@ func Patch1(target, replacement, placehlder interface{}) *PatchGuard {
 	return &PatchGuard{t, r, orignPtr, originJumpData, OrignUintptr}
 }
 
+func Patch2(target uintptr, replacement, placehlder interface{}) *PatchGuard {
+
+	r := reflect.ValueOf(replacement)
+	p := reflect.ValueOf(placehlder)
+
+	bytes, orignFunc, targetuinptr := replaceFunction("uinptr", target, (uintptr)(getPtr(r)), target, p.Pointer())
+
+	return &PatchGuard{reflect.ValueOf(target), r, orignFunc, bytes, targetuinptr}
+}
+
+
 func PatchWithJump(target interface{}, jumpData *[]byte) *PatchGuard {
 	t := reflect.ValueOf(target)
 	orignPtr, orignJumpData, OrignUintptr := patchValueWithJump(t, jumpData, nil)
@@ -107,7 +118,8 @@ func patchValue(target, replacement, placehlder reflect.Value, replacementPtr in
 	ptr := uintptr(p1)
 	fmt.Println(" ptr is:", ptr)
 
-	bytes, orignFunc, targetuinptr := replaceFunction(target.Pointer(), (uintptr)(getPtr(replacement)), (uintptr)(getPtr(target)), placehlder.Pointer())
+
+	bytes, orignFunc, targetuinptr := replaceFunction(target.String(), target.Pointer(), (uintptr)(getPtr(replacement)), (uintptr)(getPtr(target)), placehlder.Pointer())
 	patches[target.Pointer()] = patch{*bytes, &replacement}
 	ptrholder[target.Pointer()] = replacementPtr
 

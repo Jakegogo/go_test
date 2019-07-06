@@ -1,0 +1,12 @@
+# pack-refs with: peeled fully-peeled sorted 
+7d1dc997617fb662918b6ea95efc19faa87e1cf8 refs/remotes/origin/master
+8cc6a32d9b7568a65a4ac1be5df9ae925a3a7e4d refs/remotes/origin/release-branch.go1.10
+a434f64ace81347eff0fb4a32bc80a235e0ad762 refs/remotes/origin/release-branch.go1.11
+f8f91591b720f65816369d36e577b525d0926902 refs/remotes/origin/release-branch.go1.2
+b5e7da4a16c82e64159ccf8eda8babcecef44b88 refs/remotes/origin/release-branch.go1.3
+abf43428cc239218424c7a44dc9b5987cd351c3e refs/remotes/origin/release-branch.go1.4
+d02228d1857b9f49cd0252788516ff5584266eb6 refs/remotes/origin/release-branch.go1.5
+c887be1b2ebd11663d4bf2fbca508c449172339e refs/remotes/origin/release-branch.go1.6
+6220cba6419b2bf78aad19d85c347ecc0fda2b53 refs/remotes/origin/release-branch.go1.7
+3b2b05e9f5aeacb2e336feb4fb2a59f3955d75ee refs/remotes/origin/release-branch.go1.8
+5d2fd3ccab986d52112bf301d47a819783339d0e refs/remotes/origin/release-branch.go1.9

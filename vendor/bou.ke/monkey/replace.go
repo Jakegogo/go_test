@@ -1,12 +1,17 @@
 package monkey
 
 import (
+	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"golang.org/x/arch/x86/x86asm"
 	"reflect"
+	"strconv"
+	"strings"
 	"syscall"
 	"unsafe"
 )
+
 
 func rawMemoryAccess(p uintptr, length int) []byte {
 	return *(*[]byte)(unsafe.Pointer(&reflect.SliceHeader{
@@ -22,12 +27,12 @@ func pageStart(ptr uintptr) uintptr {
 
 // from is a pointer to the actual function
 // to is a pointer to a go funcvalue
-func replaceFunction(from, to, orign, placehlder uintptr) (originalBytes *[]byte, orignFunc unsafe.Pointer, originPtr uintptr) {
+func replaceFunction(name string, from, to, orign, placehlder uintptr) (originalBytes *[]byte, orignFunc unsafe.Pointer, originPtr uintptr) {
 
 	fmt.Println("from is:", fmt.Sprintf("0x%x", from))
 	fmt.Println("placehlder is:", fmt.Sprintf("0x%x", placehlder))
 	redirect1 := *(*int32)(unsafe.Pointer(from))
-	fmt.Println("redirect1 is:", redirect1)
+	fmt.Printf("redirect1 is:0x%x\n", redirect1)
 
 	redirect := *(*uintptr)(unsafe.Pointer(from))
 	fmt.Printf("before from redirect to 0x%x %d\n", redirect, redirect)
@@ -41,11 +46,128 @@ func replaceFunction(from, to, orign, placehlder uintptr) (originalBytes *[]byte
 	fmt.Printf("origin data: %s\n", hex.EncodeToString(original))
 
 	// copy origin function
-	copyf := rawMemoryAccess(from, 170)
-	copyOrigin := make([]byte, 170)
+	copyf := rawMemoryAccess(from, 300)
+	copyOrigin := make([]byte, 300)
 	copy(copyOrigin, copyf)
 
-	copyToLocation(placehlder, copyf)
+
+
+
+	startAddr := (uint64)(from)
+	for pos :=0 ;pos < len(copyOrigin); {
+
+		endPos := pos+16
+		if endPos > len(copyOrigin) {
+			endPos = len(copyOrigin)
+		}
+
+		code := copyOrigin[pos:endPos]
+
+		ins, err := x86asm.Decode(code, 64)
+
+		if err == nil && ins.Opcode != 0 {
+			fmt.Printf("0x%x:\t%s\t\t%s\n", startAddr + (uint64)(pos), ins.Op, ins.String())
+			if "CALL" == ins.Op.String() {
+
+
+				addrArgs := ins.Args[0].String()
+				if strings.HasPrefix(addrArgs, ".+") || strings.HasPrefix(addrArgs, ".-") {
+					relativeAddr, err := strconv.ParseUint(addrArgs[2:], 0, 32)
+					if strings.HasPrefix(addrArgs, ".-") {
+						relativeAddr = - relativeAddr
+					}
+					if err == nil {
+						//copy(copyf[offset:offset+4], relativeAddr)
+						offset := pos + 1
+						fmt.Println((int)(startAddr- (uint64)(placehlder) +relativeAddr))
+						binary.LittleEndian.PutUint32(copyOrigin[offset:offset+4], (uint32)(startAddr-(uint64)(placehlder) +relativeAddr))
+
+						ins, err := x86asm.Decode(copyOrigin[pos:pos+ins.Len], 64)
+						if err == nil {
+							fmt.Printf("after replace: 0x%x:\t%s\t\t%s\n", startAddr + (uint64)(pos), ins.Op, ins.String())
+						}
+					} else {
+						panic(err)
+					}
+				}
+
+			}
+
+			if "JMP" == ins.Op.String() {
+				addrArgs := ins.Args[0].String()
+				fmt.Println(addrArgs)
+				if strings.HasPrefix(addrArgs, ".-") {
+					jmpAddr, err := strconv.ParseUint(addrArgs[2:], 0, 32)
+					if err == nil {
+						if (uint64)(startAddr+(uint64)(pos) + (uint64)(ins.Len) -jmpAddr) == (uint64)(from) {
+							//offset := pos + 1
+							//binary.LittleEndian.PutUint32(copyOrigin[offset:offset+4], (uint32)(placehlder))
+						}
+					}
+				}
+			}
+
+			if "MOV" == ins.Op.String() {
+				addrArgs := ins.Args[0].String()
+				if strings.Contains(addrArgs, "RIP+") || strings.Contains(addrArgs, "RIP-") {
+					offset := pos + 3
+					relativeAddr := binary.LittleEndian.Uint32(copyOrigin[offset:offset+4])
+					if strings.Contains(addrArgs, "RIP-") {
+						relativeAddr = - relativeAddr
+					}
+
+					fmt.Println((int)(startAddr- (uint64)(placehlder) +(uint64)(relativeAddr)))
+					binary.LittleEndian.PutUint32(copyOrigin[offset:offset+4], (uint32)(startAddr-(uint64)(placehlder) +(uint64)(relativeAddr)))
+
+					ins, err := x86asm.Decode(copyOrigin[pos:pos+ins.Len], 64)
+					if err == nil {
+						fmt.Printf("after replace: 0x%x:\t%s\t\t%s\n", startAddr + (uint64)(pos), ins.Op, ins.String())
+					}
+				}
+
+				addrArgs1 := ins.Args[1].String()
+				if strings.Contains(addrArgs1, "RIP+") || strings.Contains(addrArgs1, "RIP-") {
+					offset := pos + 3
+					relativeAddr := binary.LittleEndian.Uint32(copyOrigin[offset:offset+4])
+					if strings.Contains(addrArgs1, "RIP-") {
+						relativeAddr = - relativeAddr
+					}
+
+					fmt.Println((int)(startAddr- (uint64)(placehlder) +(uint64)(relativeAddr)))
+					binary.LittleEndian.PutUint32(copyOrigin[offset:offset+4], (uint32)(startAddr-(uint64)(placehlder) +(uint64)(relativeAddr)))
+
+					ins, err := x86asm.Decode(copyOrigin[pos:pos+ins.Len], 64)
+					if err == nil {
+						fmt.Printf("after replace: 0x%x:\t%s\t\t%s\n", startAddr + (uint64)(pos), ins.Op, ins.String())
+					}
+				}
+			}
+
+			if "LEA" == ins.Op.String() {
+				addrArgs := ins.Args[1].String()
+				if strings.Contains(addrArgs, "RIP+") || strings.Contains(addrArgs, "RIP-") {
+					offset := pos + 3
+					relativeAddr := binary.LittleEndian.Uint32(copyOrigin[offset:offset+4])
+					if strings.Contains(addrArgs, "RIP-") {
+						relativeAddr = - relativeAddr
+					}
+					fmt.Println((int)(startAddr- (uint64)(placehlder) +(uint64)(relativeAddr)))
+					binary.LittleEndian.PutUint32(copyOrigin[offset:offset+4], (uint32)(startAddr-(uint64)(placehlder) +(uint64)(relativeAddr)))
+
+					ins, err := x86asm.Decode(copyOrigin[pos:pos+ins.Len], 64)
+					if err == nil {
+						fmt.Printf("after replace: 0x%x:\t%s\t\t%s\n", startAddr + (uint64)(pos), ins.Op, ins.String())
+					}
+				}
+				fmt.Print(addrArgs)
+			}
+
+		}
+		pos = pos + ins.Len
+	}
+
+
+	copyToLocation(placehlder, copyOrigin)
 
 	copyToLocation(from, jumpData)
 	fmt.Printf("from:%d, to:%d, orign:%d, originPtr:%d\n", from, to, orign, (uintptr)(unsafe.Pointer(&original[0])))

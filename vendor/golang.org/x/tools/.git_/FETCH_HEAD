@@ -1,0 +1,11 @@
+6cd1fcedba52a3e8045a1c96970cec308e4a632c		branch 'master' of https://github.com/golang/tools
+156d532d4f67148ceab07c3b59ed7fa13bdbf00c	not-for-merge	branch 'release-branch.go1.10' of https://github.com/golang/tools
+9e9bf16a4efe175e2867e1661feefa6278e4e14e	not-for-merge	branch 'release-branch.go1.11' of https://github.com/golang/tools
+f8f91591b720f65816369d36e577b525d0926902	not-for-merge	branch 'release-branch.go1.2' of https://github.com/golang/tools
+b5e7da4a16c82e64159ccf8eda8babcecef44b88	not-for-merge	branch 'release-branch.go1.3' of https://github.com/golang/tools
+abf43428cc239218424c7a44dc9b5987cd351c3e	not-for-merge	branch 'release-branch.go1.4' of https://github.com/golang/tools
+d02228d1857b9f49cd0252788516ff5584266eb6	not-for-merge	branch 'release-branch.go1.5' of https://github.com/golang/tools
+c887be1b2ebd11663d4bf2fbca508c449172339e	not-for-merge	branch 'release-branch.go1.6' of https://github.com/golang/tools
+6220cba6419b2bf78aad19d85c347ecc0fda2b53	not-for-merge	branch 'release-branch.go1.7' of https://github.com/golang/tools
+3b2b05e9f5aeacb2e336feb4fb2a59f3955d75ee	not-for-merge	branch 'release-branch.go1.8' of https://github.com/golang/tools
+5d2fd3ccab986d52112bf301d47a819783339d0e	not-for-merge	branch 'release-branch.go1.9' of https://github.com/golang/tools

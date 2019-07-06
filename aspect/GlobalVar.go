@@ -10,5 +10,5 @@ var GlobalVarIns *another.GlobalVar = &another.GlobalVar{
 }
 
 func init() {
-	log.Fatal("errorq")
+	log.Fatal("init")
 }

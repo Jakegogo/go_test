@@ -3,6 +3,7 @@ package main
 import (
 	"bou.ke/monkey"
 	"fmt"
+	"go_test/asm"
 	forcexport "go_test/forcexport"
 	"net"
 	"reflect"
@@ -78,18 +79,13 @@ func dynamicFunc() {
 				panic(err)
 			}
 		}()
-		//result2 := reflect.ValueOf(originTime4).Call([]reflect.Value{reflect.ValueOf(3)})[0].Interface()
-		//fmt.Println("orign result2 is:", result2)
-		//fmt.Println("dynamicFunc args is", args)
-		//result := args[0].Interface().(int) * 6
-		//return []reflect.Value{reflect.ValueOf(result)}
 		return []reflect.Value{reflect.ValueOf(originTime4(900))}
 	}).Interface()
 
 	_ = dynamicFunc
 
 
-	patchGuard := monkey.Patch1(time4, dynamicFunc, getPlaceHolder3)
+	patchGuard := monkey.Patch1(time4, dynamicFunc, asm.Placeholder)
 	// 构造原先方法
 	fmt.Println("OrignUintptr is:", fmt.Sprintf("0x%x", patchGuard.OrignUintptr))
 	forcexport.CreateFuncForCodePtrWithType(&originTime4, patchGuard.OrignUintptr, time4)
@@ -101,6 +97,7 @@ func dynamicFunc() {
  	fmt.Println("wraper result1 is:", time4(900))
 	fmt.Println("ok")
 }
+
 
 func getPlaceHolder(a int) interface{} {
 	return func(a int64) (int64, string) {

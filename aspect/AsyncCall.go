@@ -28,7 +28,9 @@ func init() {
 }
 
 func (o *Obj) AsyncCall(i int) (string, int) {
+	// 替换之前的代码: Call(1)
 	go (_aspect_proxy_1_Call_of())(1)
+
 
 	global = 5
 
@@ -37,13 +39,17 @@ func (o *Obj) AsyncCall(i int) (string, int) {
 	go (_aspect_proxy_2_Call_of(v))()
 
 	// go func
+	// 异步切面
 	var a = 1
 	var c = make(chan map[string]bool, 5)
 	go (_aspect_proxy_3_Anonymous_Async_Func_of(func(c chan map[string]bool, param1 int) {
 		fmt.Println("async ", a)
 	}))(c, 1)
-	fmt.Println("sync", a, *((_aspect_proxy_4_global_of(&global))()), (*((_aspect_proxy_5_GlobalVarIns_of(&GlobalVarIns))())).Key, another.GlobalVarIns1, *((_aspect_proxy_6_global1_of(&global1))()), o.i)
+	fmt.Println("sync", a, *((_aspect_proxy_4_global_of(&global))()),
+		(*((_aspect_proxy_5_GlobalVarIns_of(&GlobalVarIns))())).Key, another.GlobalVarIns1,
+		*((_aspect_proxy_6_global1_of(&global1))()), o.i)
 
+	// 循环内异步切面
 	for i = 0; i < 100; i++ {
 		go (_aspect_proxy_7_Anonymous_Async_Func_of(func() {}))()
 	}

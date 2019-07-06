@@ -1,12 +1,12 @@
-package common
+package test_log
 
 import (
 	"LogReplay-sdk-go/client/plugins/registry"
 	"context"
-	"github.com/Jakegogo/lestrrat-go/file-rotatelogs"
 	"github.com/heetch/confita/backend/env"
-	"github.com/Jakegogo/lfshook"
-	log "github.com/Jakegogo/logrus"
+	"github.com/lestrrat-go/file-rotatelogs"
+	"github.com/rifflock/lfshook"
+	log "github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
 	"strings"
@@ -63,8 +63,7 @@ func init() {
 	}
 
 	var Logger = log.StandardLogger()
-	// 只输出到文件
-	Logger.OnlyHooks = true
+	Logger.SetLevel(log.DebugLevel)
 	//Logger.SetReportCaller(true)
 	// 设置时间格式
 	formatter, ok := Logger.Formatter.(*log.TextFormatter)
@@ -90,7 +89,7 @@ func init() {
 
 	// 录制内容日志文件
 	Logger.Hooks.Add(lfshook.NewHook(
-		lfshook.BuffWriterMap{
+		lfshook.WriterMap{
 			log.InfoLevel:  recordWriter,
 		},
 		defaultJsonFormater,
@@ -114,7 +113,7 @@ func init() {
 	// 异常日志,用于查看
 	// 主日志文件
 	Logger.Hooks.Add(lfshook.NewHook(
-		lfshook.BuffWriterMap{
+		lfshook.WriterMap{
 			log.FatalLevel: exceptionWriter,
 			log.ErrorLevel: exceptionWriter,
 			log.WarnLevel: exceptionWriter,
@@ -140,7 +139,7 @@ func init() {
 	// 调试日志,用于查看
 	// 主日志文件
 	Logger.Hooks.Add(lfshook.NewHook(
-		lfshook.BuffWriterMap{
+		lfshook.WriterMap{
 			log.TraceLevel: debugWriter,
 			log.FatalLevel: debugWriter,
 			log.DebugLevel: debugWriter,
@@ -152,5 +151,6 @@ func init() {
 	))
 
 	log.Debugf("logger init success")
-
+	log.SetLevel(log.DebugLevel)
+	Logger.SetLevel(log.DebugLevel)
 }
