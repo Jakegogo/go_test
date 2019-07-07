@@ -3,7 +3,6 @@ package main
 import (
 	"bou.ke/monkey"
 	"fmt"
-	"go_test/asm"
 	forcexport "go_test/forcexport"
 	"net"
 	"reflect"
@@ -25,6 +24,7 @@ func time4(a int) int {
 		return 9
 	}
 	C=3
+	fmt.Println("yes")
 	fmt.Println(C)
 	//t6Result := 0
 	//t6Result := time6fun.Call([]reflect.Value{reflect.ValueOf(0)})[0].Interface().(int)
@@ -85,7 +85,7 @@ func dynamicFunc() {
 	_ = dynamicFunc
 
 
-	patchGuard := monkey.Patch1(time4, dynamicFunc, asm.Placeholder)
+	patchGuard := monkey.Patch(time4, dynamicFunc)
 	// 构造原先方法
 	fmt.Println("OrignUintptr is:", fmt.Sprintf("0x%x", patchGuard.OrignUintptr))
 	forcexport.CreateFuncForCodePtrWithType(&originTime4, patchGuard.OrignUintptr, time4)

@@ -1,5 +1,7 @@
 package monkey
 
+var funcPrologue = defaultFuncPrologue64
+
 // Assembles a jump to a function value
 func jmpToFunctionValue(to uintptr) []byte {
 	return []byte{

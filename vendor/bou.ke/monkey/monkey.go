@@ -50,7 +50,7 @@ func (g *PatchGuard) Restore() {
 	patchValue(g.target, g.replacement, reflect.ValueOf(nil), nil)
 }
 func Patch(target, replacement interface{}) *PatchGuard {
-	return Patch1(target, replacement, nil)
+	return Patch1(target, replacement, Placeholder)
 }
 
 // Patch replaces a function with another
