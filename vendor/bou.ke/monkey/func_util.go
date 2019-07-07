@@ -21,7 +21,7 @@ func pageStart(ptr uintptr) uintptr {
 	return ptr & ^(uintptr(syscall.Getpagesize() - 1))
 }
 
-
+// not absolutly safe
 func GetFuncSize(mode int, start uintptr, minimal bool) (int, error) {
 
 	prologueLen := len(funcPrologue)

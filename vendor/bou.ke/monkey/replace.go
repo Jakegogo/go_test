@@ -29,6 +29,15 @@ func replaceFunction(name string, from, to, orign, placehlder uintptr) (original
 
 	jumpData := jmpToFunctionValue(to)
 
+	ins, err := x86asm.Decode(jumpData, 64)
+	if err == nil {
+		fmt.Print("jump ins:", ins)
+		ins, err := x86asm.Decode(jumpData[ins.Len:], 64)
+		if err == nil {
+			fmt.Print(" ", ins.String(), "\n")
+		}
+	}
+
 	f := rawMemoryAccess(from, len(jumpData))
 	original := make([]byte, len(f))
 	copy(original, f)
@@ -97,6 +106,9 @@ func replaceRelativeAddr(from uintptr, copyOrigin []byte, placehlder uintptr) {
 						relativeAddr = - relativeAddr
 					}
 					if err == nil {
+
+						// TODO 递归处理,如果是绝对地址
+
 						//copy(copyf[offset:offset+4], relativeAddr)
 						offset := pos + 1
 						fmt.Println((int)(startAddr - (uint64)(placehlder) + relativeAddr))
@@ -123,10 +135,12 @@ func replaceRelativeAddr(from uintptr, copyOrigin []byte, placehlder uintptr) {
 							//offset := pos + 1
 							//binary.LittleEndian.PutUint32(copyOrigin[offset:offset+4], (uint32)(placehlder))
 						}
+						// TODO JMP外部函数处理
 					}
 				}
 			}
 
+			// TODO MOVQ
 			if "MOV" == ins.Op.String() {
 				addrArgs := ins.Args[0].String()
 				if strings.Contains(addrArgs, "RIP+") || strings.Contains(addrArgs, "RIP-") {
@@ -163,6 +177,7 @@ func replaceRelativeAddr(from uintptr, copyOrigin []byte, placehlder uintptr) {
 				}
 			}
 
+			// TODO LEAQ
 			if "LEA" == ins.Op.String() {
 				addrArgs := ins.Args[1].String()
 				if strings.Contains(addrArgs, "RIP+") || strings.Contains(addrArgs, "RIP-") {
