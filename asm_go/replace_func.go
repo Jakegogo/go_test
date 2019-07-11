@@ -24,8 +24,9 @@ func time4(a int) int {
 		return 9
 	}
 	C=3
+	b:=&C
 	fmt.Println("yes")
-	fmt.Println(C)
+	fmt.Println(C, b)
 	//t6Result := 0
 	//t6Result := time6fun.Call([]reflect.Value{reflect.ValueOf(0)})[0].Interface().(int)
 	return result * time6(3) + 1

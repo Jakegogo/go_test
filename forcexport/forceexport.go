@@ -35,7 +35,7 @@ type Func struct {
 // of the proper type (e.g. the address of a local variable), and will be set to
 // the result function value.
 func CreateFuncForCodePtr(outFuncPtr interface{}, codePtr uintptr) *Func {
-	outFuncVal := reflect.ValueOf(outFuncPtr).Elem()
+	outFuncVal := reflect.Indirect(reflect.ValueOf(outFuncPtr))
 	// Use reflect.MakeFunc to create a well-formed function value that's
 	// guaranteed to be of the right type and guaranteed to be on the heap
 	// (so that we can modify it). We give a nil delegate function because
